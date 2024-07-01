@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,9 +30,6 @@ public class SecurityConfiguration {
                 .csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers("/api/v1/fresher/director/**").hasAnyRole("DIRECTOR")
-                .requestMatchers("/api/v1/fresher/admin/**").hasAnyRole("ADMIN")
-                .requestMatchers("/api/v1/fresher/fresher/**").hasAnyRole("FRESHER")
                 .requestMatchers("/api/v1/manager/fresher/**").hasAnyRole("ADMIN", "DIRECTOR")
                 .requestMatchers("/api/v1/manager/center/**").hasAnyRole("ADMIN")
                 .requestMatchers("/api/v1/fresher/**").hasAnyRole("FRESHER")
