@@ -1,4 +1,4 @@
-package com.gr.freshermanagement.exception.base;
+package com.gr.freshermanagement.exception;
 
 
 

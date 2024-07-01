@@ -13,37 +13,30 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.Optional;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
-
 
 @Component
 @RequiredArgsConstructor
-public class CustomerUserDetailsService implements UserDetailsService {
-
+public class CustomUserDetailsService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Account> optionalEmployee = accountRepository.findByUsername(username);
-        Account account = optionalEmployee.orElseThrow(() -> new UsernameNotFoundException("User not found!"));
 
-        List<Role> roles = roleRepository.findRolesByAccountUsername(username);
-        List<GrantedAuthority> authorities = roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName())) // Assuming Role has a getName() method
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        Account user = accountRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("user not found"));
+        List<Role> userRoles = roleRepository.findRolesByAccountUsername(user.getUsername());
+        // Tạo danh sách quyền từ role của Employee
+        List<GrantedAuthority> authorities = userRoles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
 
-
-        return User.withUsername(account.getUsername())
-                .password(account.getPassword())
+        return User.withUsername(user.getUsername())
+                .password(user.getPassword())
                 .authorities(authorities)
                 .build();
-
     }
-
 
 
 }

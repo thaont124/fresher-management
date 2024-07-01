@@ -11,12 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/v1/test")
-public class TestController {
+@RequestMapping("api/v1/fresher")
+public class FresherController {
 
-    @GetMapping
-        @PreAuthorize("hasAuthority('DIRECTOR')")
-    private ResponseEntity<?> permitAllControl(){
+    @GetMapping("director")
+    @PreAuthorize("hasRole('DIRECTOR')")
+    private ResponseEntity<?> permitDirector(){
         Map<String, String> response = new HashMap<>();
         response.put("qq", "d");
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -30,7 +30,7 @@ public class TestController {
     }
 
     @GetMapping("admin")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     private ResponseEntity<?> permitAdmin(){
         Map<String, String> response = new HashMap<>();
         response.put("qq", "a");
