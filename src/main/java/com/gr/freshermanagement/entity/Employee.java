@@ -16,6 +16,8 @@ public class Employee {
 
     private String name;
 
+    private String employeeCode;
+
     private LocalDate dob;
 
     private String address;

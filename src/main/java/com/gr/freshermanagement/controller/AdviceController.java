@@ -3,6 +3,7 @@ package com.gr.freshermanagement.controller;
 import com.gr.freshermanagement.dto.ResponseGeneral;
 import com.gr.freshermanagement.exception.account.ExistUsernameException;
 import com.gr.freshermanagement.exception.account.UsernamePasswordIncorrectException;
+import com.gr.freshermanagement.exception.department.DepartmentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -27,6 +28,12 @@ public class AdviceController {
 
     @ExceptionHandler(UsernamePasswordIncorrectException.class)
     public ResponseEntity<ResponseGeneral<String>> handleUsernamePasswordIncorrectException(UsernamePasswordIncorrectException ex) {
+        return new ResponseEntity<>(ResponseGeneral.of(400, "Bad Request", ex.getMes()), HttpStatus.BAD_REQUEST);
+
+    }
+
+    @ExceptionHandler(DepartmentNotFoundException.class)
+    public ResponseEntity<ResponseGeneral<String>> handleDepartmentNotFoundException(DepartmentNotFoundException ex) {
         return new ResponseEntity<>(ResponseGeneral.of(400, "Bad Request", ex.getMes()), HttpStatus.BAD_REQUEST);
 
     }
