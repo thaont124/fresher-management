@@ -2,17 +2,16 @@ package com.gr.freshermanagement.service;
 
 
 import com.gr.freshermanagement.dto.request.LoginRequest;
-import com.gr.freshermanagement.dto.request.NewFresherRequest;
+import com.gr.freshermanagement.dto.request.NewEmployeeRequest;
 import com.gr.freshermanagement.dto.request.SignupRequest;
 import com.gr.freshermanagement.dto.response.AuthenticationResponse;
-import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.dto.response.NewFresherResponse;
 
 public interface EmployeeService {
-    AuthenticationResponse createEmployee(SignupRequest signupRequest);
+    AuthenticationResponse signup(SignupRequest signupRequest);
     AuthenticationResponse login (LoginRequest loginRequest);
 
-    NewFresherResponse createNewEmployee(NewFresherRequest newFresherRequest);
+    NewFresherResponse createNewEmployee(NewEmployeeRequest newFresherRequest);
 
 //    Response sendOtp();
 //    Response validateOtp();

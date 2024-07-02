@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class NewFresherRequest {
+public class NewEmployeeRequest {
     private String name;
 
     private LocalDate dob;
@@ -19,5 +19,7 @@ public class NewFresherRequest {
     private String email;
 
     private Long departmentId;
+
+    private String position;
 
 }

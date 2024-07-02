@@ -1,10 +1,9 @@
 package com.gr.freshermanagement.service.impl;
 
 import com.gr.freshermanagement.dto.request.LoginRequest;
-import com.gr.freshermanagement.dto.request.NewFresherRequest;
+import com.gr.freshermanagement.dto.request.NewEmployeeRequest;
 import com.gr.freshermanagement.dto.request.SignupRequest;
 import com.gr.freshermanagement.dto.response.AuthenticationResponse;
-import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.dto.response.NewFresherResponse;
 import com.gr.freshermanagement.entity.*;
 import com.gr.freshermanagement.exception.account.ExistUsernameException;
@@ -53,7 +52,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public AuthenticationResponse createEmployee(SignupRequest signupRequest) {
+    public AuthenticationResponse signup(SignupRequest signupRequest) {
         // Check if username already exists
         if (accountRepository.findByUsername(signupRequest.getUsername()).isPresent()) {
             throw new ExistUsernameException();
@@ -116,54 +115,28 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public NewFresherResponse createNewEmployee(NewFresherRequest newFresherRequest) {
-        //find department
-        Department department = departmentRepository.findById(newFresherRequest.getDepartmentId())
-                .orElseThrow(DepartmentNotFoundException::new);
-
-        //create fresher from request info
-        Fresher fresher = new Fresher(
-                newFresherRequest.getName(),
-                newFresherRequest.getAddress(),
-                newFresherRequest.getPhone(),
-                newFresherRequest.getEmail(),
-                Gender.valueOf(newFresherRequest.getGender()),
-                newFresherRequest.getDob(),
-                department,
-                EmployeeStatus.EDUCATING
-        );
-        Fresher savedFresher = employeeRepository.save(fresher);
-        savedFresher.generateFresherCode();
-        employeeRepository.save(savedFresher);
-
-
-        String userName = createUsername(savedFresher.getName(), savedFresher.getDob(), savedFresher.getId());
-        String password = userName;
-        while (accountRepository.existsByUsername(userName)) {
-            userName += "1";
+    public NewFresherResponse createNewEmployee(NewEmployeeRequest request) {
+        if ("fresher".equalsIgnoreCase(request.getPosition())) {
+            return createNewFresher(request);
+        } else {
+            throw new IllegalArgumentException("Unsupported position: " + request.getPosition());
         }
-        Account account = new Account();
-        account.setUsername(userName);
-        account.setPassword(passwordEncoder.encode(userName));
-        account.setEmployee(savedFresher);
-        Account savedAccount = accountRepository.save(account);
-
-        //save Role
-        Role role = roleRepository.findByName("FRESHER")
-                .orElseGet(() -> {
-                    Role newRole = new Role();
-                    newRole.setName("FRESHER");
-                    return roleRepository.save(newRole);
-                });
-        AccountRole accountRole = new AccountRole();
-        accountRole.setAccount(savedAccount);
-        accountRole.setRole(role);
-        accountRoleRepository.save(accountRole);
-
-
-        return new NewFresherResponse(fresher, userName, password);
     }
 
+
+    private String generateEmployeeCode(String position, Long id) {
+        if(position.equalsIgnoreCase("FRESHER")){
+            return "FRS" + id;
+        }
+        if(position.equalsIgnoreCase("DIRECTOR")){
+            return "DIR" + id;
+        }
+        if(position.equalsIgnoreCase("ADMIN")){
+            return "ADM" + id;
+        }
+
+        return "EMP" + id;
+    }
 
     private String createUsername(String name, LocalDate dob, Long id) {
         // Convert name to ASCII (remove diacritics)
@@ -181,4 +154,49 @@ public class EmployeeServiceImpl implements EmployeeService {
         // Combine to form username
         return lastName + year + id;
     }
+
+    @Transactional
+    public NewFresherResponse createNewFresher(NewEmployeeRequest request) {
+        // Find department
+        Department department = departmentRepository.findById(request.getDepartmentId())
+                .orElseThrow(DepartmentNotFoundException::new);
+
+        Fresher fresher = new Fresher();
+        fresher.setName(request.getName());
+        fresher.setDob(request.getDob());
+        fresher.setAddress(request.getAddress());
+        fresher.setPhone(request.getPhone());
+        fresher.setGender(Gender.valueOf(request.getGender()));
+        fresher.setEmail(request.getEmail());
+        fresher.setDepartment(department);
+        fresher.setStatus(EmployeeStatus.ACTIVE);
+        fresher.setFresherStatus(FresherStatus.EDUCATING); // Set specific status for Fresher
+
+        // Save Fresher entity to generate ID
+        fresher = employeeRepository.save(fresher);
+
+        fresher.setEmployeeCode(generateEmployeeCode(request.getPosition(), fresher.getId()));
+
+        // Generate username and password for the account
+        String username = createUsername(fresher.getName(), fresher.getDob(), fresher.getId());
+        String encodedPassword = passwordEncoder.encode(username); // Encode password
+
+        // Create Account entity
+        Account account = new Account();
+        account.setUsername(username);
+        account.setPassword(encodedPassword);
+        account.setEmployee(fresher);
+
+        // Save Account entity
+        accountRepository.save(account);
+
+        // Set the account in fresher
+        fresher.setAccount(account);
+
+        return new NewFresherResponse(fresher, username, username); // Assuming NewFresherResponse is defined appropriately
+    }
+
+
+
+
 }

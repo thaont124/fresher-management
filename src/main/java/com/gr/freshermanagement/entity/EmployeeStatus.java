@@ -1,10 +1,9 @@
 package com.gr.freshermanagement.entity;
 
 public enum EmployeeStatus {
-    EDUCATING,
-    WORKING,
+    ACTIVE,
+    INACTIVE,
     ON_LEAVE,
-    TERMINATED,
 
 }
 
