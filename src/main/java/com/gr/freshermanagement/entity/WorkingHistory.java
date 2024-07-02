@@ -16,11 +16,15 @@ public class WorkingHistory {
 
     private LocalDateTime startTime;
 
-    private LocalDateTime endTime;
+    private WorkingStatus status;
 
     @ManyToOne
     private Facility facility;
 
     @ManyToOne
     private Employee employee;
+
+    public enum WorkingStatus{
+        EDUCATING, WORKING
+    }
 }
