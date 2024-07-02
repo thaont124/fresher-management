@@ -3,19 +3,11 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
-
-@Data
 @Entity
 @NoArgsConstructor
+@Data
 @EqualsAndHashCode(callSuper = true)
-public class Center extends Facility{
-    private String address;
-    private CenterStatus status;
-
-
-    public enum CenterStatus{
-        ACTIVE, INACTIVE
-    }
+public class CenterDirector extends Employee{
+    @OneToOne
+    private Center center;
 }
