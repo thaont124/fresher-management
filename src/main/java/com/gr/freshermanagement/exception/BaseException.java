@@ -32,4 +32,5 @@ public class BaseException extends RuntimeException {
     public String getMes() {
         return message;
     }
+
 }

@@ -1,9 +1,12 @@
 package com.gr.freshermanagement.controller;
 
 import com.gr.freshermanagement.dto.request.NewEmployeeRequest;
+import com.gr.freshermanagement.entity.Fresher;
 import com.gr.freshermanagement.service.EmployeeService;
+import com.gr.freshermanagement.service.FresherService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,6 +17,16 @@ import org.springframework.web.bind.annotation.*;
 public class FresherManagerController {
     @Autowired
     private EmployeeService employeeService;
+
+    @Autowired
+    private FresherService fresherService;
+
+    @GetMapping
+    public Page<Fresher> getAllFreshers(@RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size) {
+        return fresherService.getFreshersPaginated(page, size);
+    }
+
     @PostMapping("create/{centerId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR')")
     public ResponseEntity<?> createNewFresher(

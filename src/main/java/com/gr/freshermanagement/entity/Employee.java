@@ -39,10 +39,3 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     private EmployeeStatus status;
 }
-
-
-
-
-
-
-

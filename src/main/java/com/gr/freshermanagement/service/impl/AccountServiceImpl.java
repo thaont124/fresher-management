@@ -19,6 +19,7 @@ import com.gr.freshermanagement.security.JWTUtility;
 import com.gr.freshermanagement.service.AccountService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,7 +34,9 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AccountServiceImpl implements AccountService {
+    @Autowired
     private final AuthenticationManager authenticationManager;
     @Autowired
     private EmployeeRepository employeeRepository;

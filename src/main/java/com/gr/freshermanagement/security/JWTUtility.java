@@ -1,8 +1,6 @@
 package com.gr.freshermanagement.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -43,7 +41,11 @@ public class JWTUtility implements Serializable {
 
     //for retrieving any information from token we will need the secret key
     private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
 
