@@ -15,15 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/auth")
 public class AuthController {
     @Autowired
-    private EmployeeService employeeService;
+    private AccountService accountService;
 
     @PostMapping("signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest){
-        return ResponseEntity.ok(employeeService.signup(signupRequest));
+        return ResponseEntity.ok(accountService.signup(signupRequest));
     }
 
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request){
-        return ResponseEntity.ok(employeeService.login(request));
+        return ResponseEntity.ok(accountService.login(request));
     }
 }

@@ -29,10 +29,6 @@ public class SecurityConfiguration {
         httpSecurity
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers("/api/v1/manager/fresher/**").hasAnyRole("ADMIN", "DIRECTOR")
-                .requestMatchers("/api/v1/manager/center/**").hasAnyRole("ADMIN")
-                .requestMatchers("/api/v1/fresher/**").hasAnyRole("FRESHER")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> {

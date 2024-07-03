@@ -1,27 +1,14 @@
 package com.gr.freshermanagement.service.impl;
 
-import com.gr.freshermanagement.dto.request.LoginRequest;
 import com.gr.freshermanagement.dto.request.NewEmployeeRequest;
-import com.gr.freshermanagement.dto.request.SignupRequest;
-import com.gr.freshermanagement.dto.response.AuthenticationResponse;
 import com.gr.freshermanagement.dto.response.NewFresherResponse;
 import com.gr.freshermanagement.entity.*;
-import com.gr.freshermanagement.exception.account.ExistUsernameException;
-import com.gr.freshermanagement.exception.account.UsernamePasswordIncorrectException;
 import com.gr.freshermanagement.exception.department.DepartmentNotFoundException;
-import com.gr.freshermanagement.exception.role.RoleNotFoundException;
 import com.gr.freshermanagement.repository.*;
-import com.gr.freshermanagement.security.CustomUserDetailsService;
-import com.gr.freshermanagement.security.JWTUtility;
 import com.gr.freshermanagement.service.EmployeeService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -57,12 +44,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     private String generateEmployeeCode(String position, Long id) {
         if(position.equalsIgnoreCase("FRESHER")){
             return "FRS" + id;
-        }
-        if(position.equalsIgnoreCase("DIRECTOR")){
-            return "DIR" + id;
-        }
-        if(position.equalsIgnoreCase("ADMIN")){
-            return "ADM" + id;
         }
 
         return "EMP" + id;
@@ -100,7 +81,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         fresher.setEmail(request.getEmail());
         fresher.setDepartment(department);
         fresher.setStatus(EmployeeStatus.ACTIVE);
-        fresher.setFresherStatus(FresherStatus.EDUCATING);
+        fresher.setFresherStatus(FresherStatus.WAITING);
 
         // Save Fresher entity to generate ID
         fresher = employeeRepository.save(fresher);
@@ -122,10 +103,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         // Set the account in fresher
         fresher.setAccount(account);
-
-
-
-
         return new NewFresherResponse(fresher, username, username); // Assuming NewFresherResponse is defined appropriately
     }
 
