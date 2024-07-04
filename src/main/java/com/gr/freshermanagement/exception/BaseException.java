@@ -3,11 +3,13 @@ package com.gr.freshermanagement.exception;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class BaseException extends RuntimeException {
     private String message;

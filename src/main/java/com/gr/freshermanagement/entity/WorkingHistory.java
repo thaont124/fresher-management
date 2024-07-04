@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,7 +15,9 @@ public class WorkingHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime startTime;
+    private LocalDate startTime;
+
+    private LocalDate endTime;
 
     private WorkingStatus status;
 
@@ -25,6 +28,6 @@ public class WorkingHistory {
     private Employee employee;
 
     public enum WorkingStatus{
-        EDUCATING, WORKING
+        EDUCATING, WORKING, TERMINATED
     }
 }

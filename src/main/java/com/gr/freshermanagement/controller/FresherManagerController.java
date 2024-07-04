@@ -1,5 +1,6 @@
 package com.gr.freshermanagement.controller;
 
+import com.gr.freshermanagement.dto.ResponseGeneral;
 import com.gr.freshermanagement.dto.request.NewEmployeeRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.dto.response.NewFresherResponse;
@@ -10,10 +11,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping(value = "api/v1/manager/fresher")
@@ -25,9 +29,12 @@ public class FresherManagerController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public Page<EmployeeResponse> getAllFreshers(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<?> getAllFreshers(@RequestParam(defaultValue = "0") int page,
                                                  @RequestParam(defaultValue = "15") int size) {
-        return fresherService.getFreshersPaginated(page, size);
+        return new ResponseEntity<>(
+                ResponseGeneral.of(200, "Get list success", fresherService.getFreshersPaginated(page, size).getContent()),
+                HttpStatus.CREATED);
+
     }
 
     @PostMapping("create")
@@ -36,9 +43,39 @@ public class FresherManagerController {
             @RequestBody @Valid NewEmployeeRequest newFresherRequest){
         try {
             NewFresherResponse createdFresher = employeeService.createNewEmployee(newFresherRequest);
-            return new ResponseEntity<>(createdFresher, HttpStatus.CREATED);
+            return new ResponseEntity<>(
+                    ResponseGeneral.of(201, "Add success", createdFresher), HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    ResponseGeneral.of(400, e.getMessage(), null), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("{facilityId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<?> getFreshersByFacilityAndDateRange(
+            @PathVariable Long facilityId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int size) {
+
+        Page<EmployeeResponse> freshers = fresherService.getFreshersByFacilityAndDateRange(facilityId, startDate, endDate, page, size);
+        return new ResponseEntity<>(
+                ResponseGeneral.of(201, "Add success", freshers), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR')")
+    public ResponseEntity<?> deactivateFresher(@PathVariable Long id) {
+        fresherService.deactivateFresher(id);
+        return new ResponseEntity<>(ResponseGeneral.of(200, "Fresher deactivated successfully", null), HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<?> updateFresher(@PathVariable Long id, @RequestBody Fresher updatedFresher) {
+        EmployeeResponse response = fresherService.updateFresher(id, updatedFresher);
+        return new ResponseEntity<>(ResponseGeneral.of(200, "Update success", response), HttpStatus.OK);
     }
 }
