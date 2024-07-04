@@ -18,6 +18,8 @@ public class Account {
 
     private String password;
 
+    private String avatar;
+
     @OneToOne
     @JoinColumn(name = "employee_id")
     private Employee employee;

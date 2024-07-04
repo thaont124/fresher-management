@@ -36,33 +36,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class AccountServiceImpl implements AccountService {
-    @Autowired
+
     private final AuthenticationManager authenticationManager;
-    @Autowired
-    private EmployeeRepository employeeRepository;
-    @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private JWTUtility jwtUtility;
-    @Autowired
-    private AccountRoleRepository accountRoleRepository;
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
-
-    @Override
-    public List<Role> findRolesByAccountUsername(String username) {
-        return roleRepository.findRolesByAccountUsername(username);
-    }
-
-    @Override
-    public Optional<Account> findByUsername(String username) {
-        return accountRepository.findByUsername(username);
-    }
-
+    private final EmployeeRepository employeeRepository;
+    private final AccountRepository accountRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JWTUtility jwtUtility;
+    private final AccountRoleRepository accountRoleRepository;
+    private final CustomUserDetailsService userDetailsService;
 
     @Override
     @Transactional
@@ -123,7 +105,5 @@ public class AccountServiceImpl implements AccountService {
         } catch (Exception e) {
             throw new UsernamePasswordIncorrectException();
         }
-
-
     }
 }

@@ -10,10 +10,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AccountService {
-    List<Role> findRolesByAccountUsername(String username);
-
-    Optional<Account> findByUsername(String username);
-
     AuthenticationResponse signup(SignupRequest signupRequest);
     AuthenticationResponse login (LoginRequest loginRequest);
+
+
+    //    Response sendOtp();
+//    Response validateOtp();
+//    Response resetPassword();
+//    Response changePassword();
 }

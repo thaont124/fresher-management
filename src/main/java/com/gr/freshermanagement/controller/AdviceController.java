@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -25,7 +28,11 @@ import java.util.Locale;
 public class AdviceController {
     private static final Logger logger = LoggerFactory.getLogger(AdviceController.class);
     private final MessageSource messageSource;
-    private ObjectMapper objectMapper;
+    @ExceptionHandler(DepartmentNotFoundException.class)
+    public ResponseEntity<ResponseGeneral<String>> handleDepartmentNotFoundException(DepartmentNotFoundException ex) {
+        return new ResponseEntity<>(ResponseGeneral.of(400, "Bad Request", ex.getMes()), HttpStatus.BAD_REQUEST);
+
+    }
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ResponseGeneral<String>> handleExpiredTokenException(NoResourceFoundException ex) {
@@ -46,21 +53,25 @@ public class AdviceController {
 
     }
 
-    @ExceptionHandler(DepartmentNotFoundException.class)
-    public ResponseEntity<ResponseGeneral<String>> handleDepartmentNotFoundException(DepartmentNotFoundException ex) {
-        return new ResponseEntity<>(ResponseGeneral.of(400, "Bad Request", ex.getMes()), HttpStatus.BAD_REQUEST);
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ResponseGeneral<String>> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
+        return new ResponseEntity<>(ResponseGeneral.of(405, "Method Not Allowed", ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
 
     }
+    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    public ResponseEntity<ResponseGeneral<String>> handleHttpMediaTypeNotAcceptableException(HttpMediaTypeNotAcceptableException ex) {
+        return new ResponseEntity<>(ResponseGeneral.of(406, "Not Acceptable", ex.getMessage()), HttpStatus.NOT_ACCEPTABLE);
 
-    private String getMessage(String code, Locale locale) {
-        try {
-            return messageSource.getMessage(code, null, locale);
-        } catch (Exception ex) {
-            return code;
-        }
     }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ResponseGeneral<String>> handleHttpMediaTypeNotAcceptableException(MethodArgumentNotValidException ex) {
+        return new ResponseEntity<>(ResponseGeneral.of(400, ex.getFieldError().getDefaultMessage(), null), HttpStatus.BAD_REQUEST);
 
-    private String getMessageParamsKey(String key) {
-        return "%" + key + "%";
     }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ResponseGeneral<String>> handleException(Exception ex) {
+//        return new ResponseEntity<>(ResponseGeneral.of(500, "Internal Server Error", ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+//
+//    }
 }

@@ -8,14 +8,7 @@ import com.gr.freshermanagement.dto.response.AuthenticationResponse;
 import com.gr.freshermanagement.dto.response.NewFresherResponse;
 
 public interface EmployeeService {
-
-
-    NewFresherResponse createNewEmployee(NewEmployeeRequest newFresherRequest, Long centerId);
-
-//    Response sendOtp();
-//    Response validateOtp();
-//    Response resetPassword();
-//    Response changePassword();
+    NewFresherResponse createNewEmployee(NewEmployeeRequest newFresherRequest);
 }
 
 

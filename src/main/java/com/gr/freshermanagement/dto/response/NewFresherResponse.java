@@ -1,9 +1,15 @@
 package com.gr.freshermanagement.dto.response;
 
 import com.gr.freshermanagement.entity.Fresher;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class NewFresherResponse {
     private String name;
 
