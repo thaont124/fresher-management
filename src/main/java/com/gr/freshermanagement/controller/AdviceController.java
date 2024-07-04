@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -62,6 +63,11 @@ public class AdviceController {
     @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
     public ResponseEntity<ResponseGeneral<String>> handleHttpMediaTypeNotAcceptableException(HttpMediaTypeNotAcceptableException ex) {
         return new ResponseEntity<>(ResponseGeneral.of(406, "Not Acceptable", ex.getMessage()), HttpStatus.NOT_ACCEPTABLE);
+
+    }
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ResponseGeneral<String>> handleAuthorizationDeniedException(AuthorizationDeniedException ex) {
+        return new ResponseEntity<>(ResponseGeneral.of(403, "Don't have permission to access this resource", null), HttpStatus.FORBIDDEN );
 
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)

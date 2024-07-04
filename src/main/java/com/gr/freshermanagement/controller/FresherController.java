@@ -13,27 +13,4 @@ import java.util.Map;
 @RestController
 @RequestMapping("api/v1/fresher")
 public class FresherController {
-    //test
-    @GetMapping("director")
-    @PreAuthorize("hasRole('DIRECTOR')") //@PreAuthorize not working
-    private ResponseEntity<?> permitDirector(){
-        Map<String, String> response = new HashMap<>();
-        response.put("qq", "d");
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @GetMapping("fresher")
-    private ResponseEntity<?> permitFresher(){
-        Map<String, String> response = new HashMap<>();
-        response.put("qq", "f");
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @GetMapping("admin")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    private ResponseEntity<?> permitAdmin(){
-        Map<String, String> response = new HashMap<>();
-        response.put("qq", "a");
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
 }

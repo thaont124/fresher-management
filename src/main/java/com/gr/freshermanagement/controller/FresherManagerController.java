@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "api/v1/manager/fresher")
+
 @RequiredArgsConstructor
 public class FresherManagerController {
     private final EmployeeService employeeService;
