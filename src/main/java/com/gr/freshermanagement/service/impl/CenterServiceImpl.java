@@ -50,6 +50,10 @@ public class CenterServiceImpl implements CenterService {
 
     @Override
     public void deleteCenter(Long id) {
-        centerRepository.deleteById(id);
+        Center center = centerRepository.findById(id)
+                .orElseThrow(() -> new FacilityNotFoundException("Center not found with id: " + id));
+
+        center.setStatus(Center.CenterStatus.INACTIVE);
+        centerRepository.save(center);
     }
 }
