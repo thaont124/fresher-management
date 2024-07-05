@@ -1,5 +1,6 @@
 package com.gr.freshermanagement.service;
 
+import com.gr.freshermanagement.dto.request.EmployeeRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.entity.Fresher;
 import jakarta.transaction.Transactional;
@@ -15,5 +16,5 @@ public interface FresherService {
     void deactivateFresher(Long fresherId);
 
     @Transactional
-    EmployeeResponse updateFresher(Long id, Fresher updatedFresher);
+    EmployeeResponse updateFresher(Long id, EmployeeRequest updatedFresher);
 }

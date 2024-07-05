@@ -1,6 +1,7 @@
 package com.gr.freshermanagement.controller;
 
 import com.gr.freshermanagement.dto.ResponseGeneral;
+import com.gr.freshermanagement.dto.request.EmployeeRequest;
 import com.gr.freshermanagement.dto.request.NewEmployeeRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.dto.response.NewFresherResponse;
@@ -74,7 +75,7 @@ public class FresherManagerController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<?> updateFresher(@PathVariable Long id, @RequestBody Fresher updatedFresher) {
+    public ResponseEntity<?> updateFresher(@PathVariable Long id, @RequestBody EmployeeRequest updatedFresher) {
         EmployeeResponse response = fresherService.updateFresher(id, updatedFresher);
         return new ResponseEntity<>(ResponseGeneral.of(200, "Update success", response), HttpStatus.OK);
     }

@@ -52,47 +52,38 @@ public class FresherServiceImpl implements FresherService {
 
     @Transactional
     @Override
-    public EmployeeResponse updateFresher(Long id, Fresher updatedFresher) {
+    public EmployeeResponse updateFresher(Long id, EmployeeRequest employeeRequest) {
         Fresher fresher = fresherRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("Fresher not found with id: " + id));
 
-        fresher.setName(updatedFresher.getName());
-        fresher.setDob(updatedFresher.getDob());
-        fresher.setAddress(updatedFresher.getAddress());
-        fresher.setPhone(updatedFresher.getPhone());
-        fresher.setGender(updatedFresher.getGender());
-        fresher.setEmail(updatedFresher.getEmail());
-        fresher.setDepartment(updatedFresher.getDepartment());
-        fresher.setStatus(updatedFresher.getStatus());
-        fresher.setFresherStatus(updatedFresher.getFresherStatus());
+        // Update common fields if they are not null
+        if (employeeRequest.getName() != null) {
+            fresher.setName(employeeRequest.getName());
+        }
+        if (employeeRequest.getDob() != null) {
+            fresher.setDob(employeeRequest.getDob());
+        }
+        if (employeeRequest.getAddress() != null) {
+            fresher.setAddress(employeeRequest.getAddress());
+        }
+        if (employeeRequest.getPhone() != null) {
+            fresher.setPhone(employeeRequest.getPhone());
+        }
+        if (employeeRequest.getGender() != null) {
+            fresher.setGender(Gender.valueOf(employeeRequest.getGender()));
+        }
+        if (employeeRequest.getEmail() != null) {
+            fresher.setEmail(employeeRequest.getEmail());
+        }
+        if (employeeRequest.getFresherStatus() != null) {
+            fresher.setFresherStatus(FresherStatus.valueOf(employeeRequest.getFresherStatus()));
+        }
 
+        // Save updated fresher
         Fresher savedFresher = fresherRepository.save(fresher);
 
-        return convertToEmployeeResponse(savedFresher);
-    }
-
-    public EmployeeResponse updateFresherInfo(Long id, EmployeeRequest employeeRequest) {
-        Fresher fresher = fresherRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Fresher not found with id: " + id));
-
-
-        // Update common fields
-        fresher.setName(employeeRequest.getName());
-        fresher.setDob(employeeRequest.getDob());
-        fresher.setAddress(employeeRequest.getAddress());
-        fresher.setPhone(employeeRequest.getPhone());
-        fresher.setGender(Gender.valueOf(employeeRequest.getGender()));
-        fresher.setEmail(employeeRequest.getEmail());
-
-        fresher.setFresherStatus(FresherStatus.valueOf(employeeRequest.getFresherStatus()));
-
-
-        // Save updated employee
-        fresherRepository.save(fresher);
-
         // Return response
-        return convertToEmployeeResponse(fresher);
-
+        return convertToEmployeeResponse(savedFresher);
     }
 
 
