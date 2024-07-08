@@ -1,5 +1,6 @@
 package com.gr.freshermanagement.service.impl;
 
+import com.gr.freshermanagement.converter.EmployeeConverter;
 import com.gr.freshermanagement.dto.request.employee.EmployeeUpdateRequest;
 import com.gr.freshermanagement.dto.request.employee.NewEmployeeRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
@@ -21,7 +22,9 @@ import java.io.IOException;
 import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -59,10 +62,34 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public NewFresherResponse createListEmployee(MultipartFile file) throws IOException {
-        List<NewEmployeeRequest> listRequest = ExcelUtility.excelToFresherList(file.getInputStream());
+    public List<EmployeeResponse> createListEmployee(MultipartFile file) throws IOException {
+        List<NewEmployeeRequest> requests = ExcelUtility.excelToFresherList(file.getInputStream());
+        // get list department
+        List<String> departmentIds = requests.stream()
+                .map(NewEmployeeRequest::getDepartmentId)
+                .collect(Collectors.toList());
 
-        return null;
+        List<Department> departments = departmentRepository.findAllByCodeIn(departmentIds);
+        Map<Long, Department> departmentMap = departments.stream()
+                .collect(Collectors.toMap(Department::getId, department -> department));
+
+        // Convert to fresher
+        List<Fresher> freshers = requests.stream()
+                .map(request -> {
+                    Department department = departmentMap.get(request.getDepartmentId());
+                    if (department == null) {
+                        throw new RuntimeException("Department not found for id: " + request.getDepartmentId());
+                    }
+                    return EmployeeConverter.toFresher(request, department);
+                })
+                .collect(Collectors.toList());
+
+        // saved fresher
+        List<Fresher> savedFreshers = employeeRepository.saveAll(freshers);
+
+
+        // Convert to NewFresherResponse
+        return EmployeeConverter.toFresherResponseList(savedFreshers);
     }
 
     private String generateEmployeeCode(String position, Long id) {

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "api/v1/manager/fresher")
@@ -55,7 +56,7 @@ public class FresherManagerController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> createNewFresher(@RequestParam("file") MultipartFile file){
         try {
-            NewFresherResponse createdFresher = employeeService.createListEmployee(file);
+            List<EmployeeResponse> createdFresher = employeeService.createListEmployee(file);
             return new ResponseEntity<>(
                     ResponseGeneral.of(201, "Add success", createdFresher), HttpStatus.CREATED);
         } catch (Exception e) {

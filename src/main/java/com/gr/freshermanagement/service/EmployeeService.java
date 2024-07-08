@@ -8,6 +8,7 @@ import com.gr.freshermanagement.dto.response.NewFresherResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface EmployeeService {
     NewFresherResponse createNewEmployee(NewEmployeeRequest newFresherRequest);
@@ -16,7 +17,7 @@ public interface EmployeeService {
 
     EmployeeResponse updateInfo(EmployeeUpdateRequest request, Long accountId);
 
-    NewFresherResponse createListEmployee(MultipartFile file) throws IOException;
+    List<EmployeeResponse> createListEmployee(MultipartFile file) throws IOException;
 }
 
 
