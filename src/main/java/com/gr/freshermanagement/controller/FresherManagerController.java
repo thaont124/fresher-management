@@ -52,7 +52,7 @@ public class FresherManagerController {
         }
     }
 
-    @PostMapping("add")
+    @PostMapping("add-list")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> createNewFresher(@RequestParam("file") MultipartFile file){
         try {
