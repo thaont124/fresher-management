@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -36,7 +37,7 @@ public class FresherManagerController {
 
     }
 
-    @PostMapping("create")
+    @PostMapping("add")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> createNewFresher(
             @RequestBody @Valid NewEmployeeRequest newFresherRequest){
@@ -47,6 +48,21 @@ public class FresherManagerController {
         } catch (Exception e) {
             return new ResponseEntity<>(
                     ResponseGeneral.of(400, e.getMessage(), null), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("add")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<?> createNewFresher(@RequestParam("file") MultipartFile file){
+        try {
+            NewFresherResponse createdFresher = employeeService.createListEmployee(file);
+            return new ResponseEntity<>(
+                    ResponseGeneral.of(201, "Add success", createdFresher), HttpStatus.CREATED);
+        } catch (Exception e) {
+            String message = "The Excel file is not upload: " + file.getOriginalFilename() + "!";
+            return new ResponseEntity<>(
+                    ResponseGeneral.of(417, message, null), HttpStatus.EXPECTATION_FAILED
+                    );
         }
     }
 

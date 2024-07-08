@@ -1,9 +1,6 @@
 package com.gr.freshermanagement.dto.response;
 
-import com.gr.freshermanagement.entity.Account;
-import com.gr.freshermanagement.entity.Department;
-import com.gr.freshermanagement.entity.EmployeeStatus;
-import com.gr.freshermanagement.entity.Gender;
+import com.gr.freshermanagement.entity.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,8 +22,18 @@ public class EmployeeResponse {
     private String email;
     private String department;
     private String status;
-    private String fresherStatus;
 
-
+    public EmployeeResponse(Employee employee) {
+        this.id = employee.getId();
+        this.name = employee.getName();
+        this.employeeCode = employee.getEmployeeCode();
+        this.dob = employee.getDob();
+        this.address = employee.getAddress();
+        this.phone = employee.getPhone();
+        this.gender = String.valueOf(employee.getGender());
+        this.email = employee.getEmail();
+        this.department = employee.getDepartment().getName();
+        this.status = String.valueOf(employee.getStatus());
+    }
 }
 

@@ -1,5 +1,6 @@
 package com.gr.freshermanagement.service.impl;
 
+import com.gr.freshermanagement.converter.EmployeeConverter;
 import com.gr.freshermanagement.dto.request.employee.EmployeeUpdateRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.entity.EmployeeStatus;
@@ -28,7 +29,7 @@ public class FresherServiceImpl implements FresherService {
     public Page<EmployeeResponse> getFreshersPaginated(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("name"));
         Page<Fresher> freshersPage = fresherRepository.findAll(pageRequest);
-        return freshersPage.map(this::convertToEmployeeResponse);
+        return freshersPage.map(EmployeeConverter::toFresherResponse);
     }
 
     @Override
@@ -83,7 +84,7 @@ public class FresherServiceImpl implements FresherService {
         Fresher savedFresher = fresherRepository.save(fresher);
 
         // Return response
-        return convertToEmployeeResponse(savedFresher);
+        return EmployeeConverter.toFresherResponse(savedFresher);
     }
 
 
@@ -98,8 +99,7 @@ public class FresherServiceImpl implements FresherService {
                 fresher.getGender().toString(),
                 fresher.getEmail(),
                 fresher.getDepartment().getName(),
-                fresher.getStatus().toString(),
-                fresher.getFresherStatus().toString()
+                fresher.getStatus().toString() + " - " + fresher.getFresherStatus().toString()
         );
     }
 }

@@ -7,4 +7,8 @@ public class NotFoundException extends BaseException {
         setCode("com.ncsgroup.profiling.exception.base.BadRequestException");
         setStatus(404);
     }
+
+    public NotFoundException(String message){
+        setMessage(message);
+    }
 }

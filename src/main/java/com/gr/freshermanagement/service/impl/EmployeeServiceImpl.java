@@ -1,19 +1,26 @@
 package com.gr.freshermanagement.service.impl;
 
+import com.gr.freshermanagement.dto.request.employee.EmployeeUpdateRequest;
 import com.gr.freshermanagement.dto.request.employee.NewEmployeeRequest;
+import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.dto.response.NewFresherResponse;
 import com.gr.freshermanagement.entity.*;
+import com.gr.freshermanagement.exception.base.NotFoundException;
 import com.gr.freshermanagement.exception.department.DepartmentNotFoundException;
 import com.gr.freshermanagement.exception.role.RoleNotFoundException;
 import com.gr.freshermanagement.repository.*;
 import com.gr.freshermanagement.service.EmployeeService;
+import com.gr.freshermanagement.utils.ExcelUtility;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.Normalizer;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
@@ -36,6 +43,25 @@ public class EmployeeServiceImpl implements EmployeeService {
         } else {
             throw new IllegalArgumentException("Unsupported position: " + request.getPosition());
         }
+    }
+
+    @Override
+    public EmployeeResponse getInfo(Long accountId) {
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public EmployeeResponse updateInfo(EmployeeUpdateRequest request, Long accountId) {
+
+        return new EmployeeResponse();
+    }
+
+    @Override
+    @Transactional
+    public NewFresherResponse createListEmployee(MultipartFile file) throws IOException {
+        List<NewEmployeeRequest> listRequest = ExcelUtility.excelToFresherList(file.getInputStream());
+        return null;
     }
 
     private String generateEmployeeCode(String position, Long id) {
