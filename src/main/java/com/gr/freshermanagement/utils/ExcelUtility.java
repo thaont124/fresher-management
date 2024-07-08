@@ -63,7 +63,7 @@ public class ExcelUtility {
                             fresher.setEmail(String.valueOf(LocalDate.parse(currentCell.getStringCellValue())));
                             break;
                         case 7:
-                            fresher.setDepartmentId(Long.valueOf(currentCell.getStringCellValue()));
+                            fresher.setDepartmentId(String.valueOf(Long.valueOf(currentCell.getStringCellValue())));
                             break;
                         case 8:
                             fresher.setPosition(currentCell.getStringCellValue());
