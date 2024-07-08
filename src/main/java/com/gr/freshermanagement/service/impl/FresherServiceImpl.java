@@ -37,7 +37,7 @@ public class FresherServiceImpl implements FresherService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
         Page<Fresher> fresherPage = fresherRepository.findFreshersByFacilityAndDateRange(facilityId, startDate, endDate, pageable);
         // Assuming you have a method to convert Fresher to EmployeeResponse
-        return fresherPage.map(this::convertToEmployeeResponse);
+        return fresherPage.map(EmployeeConverter::toFresherResponse);
     }
 
 
@@ -87,19 +87,4 @@ public class FresherServiceImpl implements FresherService {
         return EmployeeConverter.toFresherResponse(savedFresher);
     }
 
-
-    private EmployeeResponse convertToEmployeeResponse(Fresher fresher) {
-        return new EmployeeResponse(
-                fresher.getId(),
-                fresher.getName(),
-                fresher.getEmployeeCode(),
-                fresher.getDob(),
-                fresher.getAddress(),
-                fresher.getPhone(),
-                fresher.getGender().toString(),
-                fresher.getEmail(),
-                fresher.getDepartment().getName(),
-                fresher.getStatus().toString() + " - " + fresher.getFresherStatus().toString()
-        );
-    }
 }

@@ -61,6 +61,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public NewFresherResponse createListEmployee(MultipartFile file) throws IOException {
         List<NewEmployeeRequest> listRequest = ExcelUtility.excelToFresherList(file.getInputStream());
+
         return null;
     }
 
@@ -89,7 +90,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public NewFresherResponse createNewFresher(NewEmployeeRequest request) {
         // Find department
-        Department department = departmentRepository.findById(request.getDepartmentId())
+        Department department = departmentRepository.findByCode(request.getDepartmentId())
                 .orElseThrow(DepartmentNotFoundException::new);
 
         // Set info fresher
