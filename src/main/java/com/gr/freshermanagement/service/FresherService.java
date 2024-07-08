@@ -1,8 +1,7 @@
 package com.gr.freshermanagement.service;
 
-import com.gr.freshermanagement.dto.request.EmployeeRequest;
+import com.gr.freshermanagement.dto.request.employee.EmployeeUpdateRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
-import com.gr.freshermanagement.entity.Fresher;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 
@@ -16,5 +15,5 @@ public interface FresherService {
     void deactivateFresher(Long fresherId);
 
     @Transactional
-    EmployeeResponse updateFresher(Long id, EmployeeRequest updatedFresher);
+    EmployeeResponse updateFresher(Long id, EmployeeUpdateRequest updatedFresher);
 }

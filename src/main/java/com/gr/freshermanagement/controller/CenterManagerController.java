@@ -1,14 +1,15 @@
 package com.gr.freshermanagement.controller;
 
-import com.gr.freshermanagement.dto.request.CenterRequest;
-import com.gr.freshermanagement.dto.response.CenterResponse;
+import com.gr.freshermanagement.dto.ResponseGeneral;
+import com.gr.freshermanagement.dto.request.center.CenterUpdateRequest;
+import com.gr.freshermanagement.dto.request.center.NewCenterRequest;
 import com.gr.freshermanagement.service.CenterService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,23 +18,36 @@ public class CenterManagerController {
     private final CenterService centerService;
 
     @GetMapping
-    public ResponseEntity<List<CenterResponse>> getAllCenters() {
-        return ResponseEntity.ok(centerService.getAllCenters());
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<?> getAllCenters(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return new ResponseEntity<>(ResponseGeneral.of(200, "Get list success", centerService.getAllCenters(page, size).getContent()),
+                HttpStatus.OK);
+
     }
 
-    @PostMapping
-    public ResponseEntity<CenterResponse> addCenter(@RequestBody CenterRequest centerRequest) {
-        return new ResponseEntity<>(centerService.addCenter(centerRequest), HttpStatus.CREATED);
+    @PostMapping("create")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<?> addCenter(@RequestBody @Valid NewCenterRequest centerRequest) {
+        return new ResponseEntity<>(ResponseGeneral.of(201, "Add success", centerService.addCenter(centerRequest)),
+                HttpStatus.CREATED);
+
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CenterResponse> updateCenter(@PathVariable Long id, @RequestBody CenterRequest centerRequest) {
-        return ResponseEntity.ok(centerService.updateCenter(id, centerRequest));
+    @PatchMapping("/patch/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR')")
+    public ResponseEntity<?> updateCenter(@PathVariable Long id, @RequestBody CenterUpdateRequest centerRequest) {
+        return new ResponseEntity<>(ResponseGeneral.of(200, "Update success", centerService.updateCenter(id, centerRequest)),
+                HttpStatus.OK);
+
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCenter(@PathVariable Long id) {
+    @DeleteMapping("/del/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<?> deleteCenter(@PathVariable Long id) {
         centerService.deleteCenter(id);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(ResponseGeneral.of(200, "Delete success", null), HttpStatus.OK);
+
     }
 }

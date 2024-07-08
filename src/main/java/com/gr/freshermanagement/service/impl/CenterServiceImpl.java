@@ -1,12 +1,16 @@
 package com.gr.freshermanagement.service.impl;
 
-import com.gr.freshermanagement.dto.request.CenterRequest;
+import com.gr.freshermanagement.dto.request.center.CenterUpdateRequest;
+import com.gr.freshermanagement.dto.request.center.NewCenterRequest;
 import com.gr.freshermanagement.dto.response.CenterResponse;
 import com.gr.freshermanagement.entity.Center;
 import com.gr.freshermanagement.exception.facility.FacilityNotFoundException;
 import com.gr.freshermanagement.repository.CenterRepository;
 import com.gr.freshermanagement.service.CenterService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,14 +22,14 @@ public class CenterServiceImpl implements CenterService {
     private final CenterRepository centerRepository;
 
     @Override
-    public List<CenterResponse> getAllCenters() {
-        return centerRepository.findAll().stream()
-                .map(CenterResponse::new)
-                .collect(Collectors.toList());
+    public Page<CenterResponse> getAllCenters(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Center> centersPage = centerRepository.findAll(pageable);
+        return centersPage.map(CenterResponse::new);
     }
 
     @Override
-    public CenterResponse addCenter(CenterRequest centerRequest) {
+    public CenterResponse addCenter(NewCenterRequest centerRequest) {
         Center center = new Center();
         center.setName(centerRequest.getName());
         center.setAddress(centerRequest.getAddress());
@@ -35,7 +39,7 @@ public class CenterServiceImpl implements CenterService {
     }
 
     @Override
-    public CenterResponse updateCenter(Long id, CenterRequest centerRequest) {
+    public CenterResponse updateCenter(Long id, CenterUpdateRequest centerRequest) {
         Center center = centerRepository.findById(id)
                 .orElseThrow(() -> new FacilityNotFoundException("Center not found with id: " + id));
 

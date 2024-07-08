@@ -1,4 +1,4 @@
-package com.gr.freshermanagement.dto.request;
+package com.gr.freshermanagement.dto.request.employee;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;

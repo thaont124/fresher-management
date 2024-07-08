@@ -1,6 +1,6 @@
 package com.gr.freshermanagement.service.impl;
 
-import com.gr.freshermanagement.dto.request.NewEmployeeRequest;
+import com.gr.freshermanagement.dto.request.employee.NewEmployeeRequest;
 import com.gr.freshermanagement.dto.response.NewFresherResponse;
 import com.gr.freshermanagement.entity.*;
 import com.gr.freshermanagement.exception.department.DepartmentNotFoundException;

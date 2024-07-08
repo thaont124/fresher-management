@@ -1,6 +1,6 @@
 package com.gr.freshermanagement.service.impl;
 
-import com.gr.freshermanagement.dto.request.EmployeeRequest;
+import com.gr.freshermanagement.dto.request.employee.EmployeeUpdateRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.entity.EmployeeStatus;
 import com.gr.freshermanagement.entity.Fresher;
@@ -52,7 +52,7 @@ public class FresherServiceImpl implements FresherService {
 
     @Transactional
     @Override
-    public EmployeeResponse updateFresher(Long id, EmployeeRequest employeeRequest) {
+    public EmployeeResponse updateFresher(Long id, EmployeeUpdateRequest employeeRequest) {
         Fresher fresher = fresherRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("Fresher not found with id: " + id));
 

@@ -1,4 +1,4 @@
-package com.gr.freshermanagement.dto.request;
+package com.gr.freshermanagement.dto.request.employee;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeRequest {
+public class EmployeeUpdateRequest {
     private String name;
     private LocalDate dob;
     private String address;

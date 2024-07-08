@@ -1,16 +1,14 @@
 package com.gr.freshermanagement.controller;
 
 import com.gr.freshermanagement.dto.ResponseGeneral;
-import com.gr.freshermanagement.dto.request.EmployeeRequest;
-import com.gr.freshermanagement.dto.request.NewEmployeeRequest;
+import com.gr.freshermanagement.dto.request.employee.EmployeeUpdateRequest;
+import com.gr.freshermanagement.dto.request.employee.NewEmployeeRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.dto.response.NewFresherResponse;
-import com.gr.freshermanagement.entity.Fresher;
 import com.gr.freshermanagement.service.EmployeeService;
 import com.gr.freshermanagement.service.FresherService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -66,16 +64,16 @@ public class FresherManagerController {
                 ResponseGeneral.of(201, "Add success", freshers), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/del/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR')")
-    public ResponseEntity<?> deactivateFresher(@PathVariable Long id) {
+    public ResponseEntity<?> deleteFresher(@PathVariable Long id) {
         fresherService.deactivateFresher(id);
         return new ResponseEntity<>(ResponseGeneral.of(200, "Fresher deactivated successfully", null), HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/patch/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<?> updateFresher(@PathVariable Long id, @RequestBody EmployeeRequest updatedFresher) {
+    public ResponseEntity<?> updateFresher(@PathVariable Long id, @RequestBody EmployeeUpdateRequest updatedFresher) {
         EmployeeResponse response = fresherService.updateFresher(id, updatedFresher);
         return new ResponseEntity<>(ResponseGeneral.of(200, "Update success", response), HttpStatus.OK);
     }
