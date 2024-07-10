@@ -1,16 +1,17 @@
 package com.gr.freshermanagement.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
+import lombok.experimental.SuperBuilder;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@SuperBuilder
 @Entity
-@NoArgsConstructor
-public class Fresher extends Employee{
+@AllArgsConstructor
+public class Fresher extends Employee {
 
 }

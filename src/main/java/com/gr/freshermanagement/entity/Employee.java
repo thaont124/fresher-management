@@ -1,13 +1,17 @@
 package com.gr.freshermanagement.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
 @Data
 @Entity
+@SuperBuilder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Employee {
     @Id

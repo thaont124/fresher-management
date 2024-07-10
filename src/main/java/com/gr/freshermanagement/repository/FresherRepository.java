@@ -12,12 +12,19 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface FresherRepository extends JpaRepository<Fresher, Long> {
-    @Query("SELECT wh.employee FROM WorkingHistory wh WHERE wh.center.id = :facilityId AND " +
+    @Query("SELECT wh.employee FROM WorkingHistory wh " +
+            "JOIN EmployeeLanguage el ON wh.employee.id = el.employee.id " +
+            "WHERE wh.center.id = :centerId AND " +
             "(wh.startTime BETWEEN :startDate AND :endDate OR " +
             "(wh.endTime IS NULL OR wh.endTime BETWEEN :startDate AND :endDate)) AND " +
-            "TYPE(wh.employee) = Fresher")
-    Page<Fresher> findFreshersByFacilityAndDateRange(@Param("facilityId") Long facilityId,
-                                                     @Param("startDate") LocalDate startDate,
-                                                     @Param("endDate") LocalDate endDate,
-                                                     Pageable pageable);
+            "TYPE(wh.employee) = Fresher AND " +
+            "el.language.languageName = :languageName")
+    Page<Fresher> findFreshersByCenterAndDateRangeAndLanguage(@Param("centerId") Long centerId,
+                                                              @Param("startDate") LocalDate startDate,
+                                                              @Param("endDate") LocalDate endDate,
+                                                              @Param("languageName") String languageName,
+                                                              Pageable pageable);
+
+
+    Fresher findByEmail(String email);
 }

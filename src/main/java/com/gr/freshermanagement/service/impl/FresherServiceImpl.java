@@ -1,60 +1,82 @@
 package com.gr.freshermanagement.service.impl;
 
-import com.gr.freshermanagement.converter.EmployeeConverter;
 import com.gr.freshermanagement.dto.request.employee.NewEmployeeRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
-import com.gr.freshermanagement.entity.Department;
-import com.gr.freshermanagement.entity.Fresher;
+import com.gr.freshermanagement.entity.*;
 import com.gr.freshermanagement.repository.DepartmentRepository;
+import com.gr.freshermanagement.repository.EmployeeLanguageRepository;
 import com.gr.freshermanagement.repository.FresherRepository;
+import com.gr.freshermanagement.repository.LanguageRepository;
+import com.gr.freshermanagement.service.ExcelService;
 import com.gr.freshermanagement.service.FresherService;
-import com.gr.freshermanagement.utils.ExcelUtils;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.Row;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class FresherServiceImpl implements FresherService {
+public class FresherServiceImpl extends ExcelService<Fresher> implements FresherService {
     private final FresherRepository fresherRepository;
     private final DepartmentRepository departmentRepository;
+    private final LanguageRepository languageRepository;
+    private final EmployeeLanguageRepository employeeLanguageRepository;
 
     @Override
     public List<EmployeeResponse> addListFresher(MultipartFile file) {
-        try {
-            //get requests from excel
-            List<NewEmployeeRequest> requests = ExcelUtils.excelToFresherList(file.getInputStream());
+        //get requests from excel
+        return null;
 
-            //get all department
-            List<String> departmentCodes = requests.stream()
-                    .map(NewEmployeeRequest::getDepartmentCode)
-                    .toList();
-            List<Department> departments = departmentRepository.findAllByCodeIn(departmentCodes);
-            Map<String, Department> departmentMap = departments.stream()
-                    .collect(Collectors.toMap(Department::getCode, department -> department));
 
-            //convert to fresher and save
-            List<Fresher> freshers = requests.stream()
-                    .map(request -> {
-                        Department department = departmentMap.get(request.getDepartmentCode());
-                        if (department == null) {
-                            throw new RuntimeException("Department not found for id: " + request.getDepartmentCode());
-                        }
-                        return EmployeeConverter.toFresher(request, department);
-                    })
-                    .collect(Collectors.toList());
-            freshers = fresherRepository.saveAll(freshers);
-            return freshers.stream()
-                    .map(EmployeeConverter::toFresherResponse)
-                    .collect(Collectors.toList());
+    }
 
-        } catch (IOException ex) {
-            throw new RuntimeException("Excel data is failed to store: " + ex.getMessage());
+    @Override
+    protected Fresher mapRowToEntity(Row row, String sheetName) {
+       //get information
+        String name = row.getCell(1).getStringCellValue();
+        LocalDate dob = row.getCell(2).getLocalDateTimeCellValue().toLocalDate();
+        String address = row.getCell(3).getStringCellValue();
+        String phone = row.getCell(4).getStringCellValue();
+        Gender gender = Gender.valueOf(row.getCell(5).getStringCellValue());
+        String email = row.getCell(6).getStringCellValue();
+
+        //check fresher exist
+        Fresher fresher = fresherRepository.findByEmail(email);
+        if (fresher == null){
+            fresher = Fresher.builder()
+                    .name(name)
+                    .dob(dob)
+                    .address(address)
+                    .phone(phone)
+                    .gender(gender)
+                    .email(email)
+                    .build();
+            fresher = fresherRepository.save(fresher);
         }
+
+
+        Language language = languageRepository.findByLanguageName(sheetName).orElseGet(() -> {
+            Language newLanguage = Language.builder()
+                    .languageName(sheetName)
+                    .build();
+            return languageRepository.save(newLanguage);
+        });
+
+        EmployeeLanguage employeeLanguage = EmployeeLanguage.builder()
+                .language(language)
+                .employee(fresher)
+                .build();
+        employeeLanguage = employeeLanguageRepository.save(employeeLanguage);
+
+        return fresher;
+    }
+
+    @Override
+    protected void processData(List<Fresher> data) {
+
     }
 }

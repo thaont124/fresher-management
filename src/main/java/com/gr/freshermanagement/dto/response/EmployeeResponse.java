@@ -22,6 +22,7 @@ public class EmployeeResponse {
     private String email;
     private String department;
     private String status;
+    private String avtUrl;
 
     public EmployeeResponse(Employee employee) {
         this.id = employee.getId();

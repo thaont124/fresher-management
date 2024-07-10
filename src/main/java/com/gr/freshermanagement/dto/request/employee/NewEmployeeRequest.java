@@ -28,8 +28,6 @@ public class NewEmployeeRequest {
     @Email(message = "Email should be valid")
     private String email;
 
-    @NotNull(message = "Department Code is required")
-    private String departmentCode;
 
     @NotEmpty(message = "Position is required")
     private String position;
