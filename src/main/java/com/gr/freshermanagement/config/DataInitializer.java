@@ -11,6 +11,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 public class DataInitializer implements CommandLineRunner {
 
@@ -29,9 +31,9 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // Initialize role
-        Role adminRole = new Role("ROLE_ADMIN");
-        Role fresherRole = new Role("ROLE_FRESHER");
-        Role directorRole = new Role("ROLE_DIRECTOR");
+        Role adminRole = new Role("ROLE_ADMIN", Role.RoleStatus.ACTIVE);
+        Role fresherRole = new Role("ROLE_FRESHER", Role.RoleStatus.ACTIVE);
+        Role directorRole = new Role("ROLE_DIRECTOR", Role.RoleStatus.ACTIVE);
 
         roleRepository.save(adminRole);
         roleRepository.save(fresherRole);
@@ -41,7 +43,8 @@ public class DataInitializer implements CommandLineRunner {
         if (accountRepository.findByUsername("admin").isEmpty()) {
             Account adminAccount = new Account();
             adminAccount.setUsername("admin");
-            adminAccount.setPassword(passwordEncoder.encode("adminpassword")); // Mã hóa mật khẩu
+            adminAccount.setPassword(passwordEncoder.encode("adminpassword"));
+            adminAccount.setCreateAt(LocalDateTime.now());
             accountRepository.save(adminAccount);
 
             AccountRole adminAccountRole = new AccountRole(adminAccount, adminRole);

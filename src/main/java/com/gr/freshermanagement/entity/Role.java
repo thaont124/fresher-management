@@ -19,8 +19,9 @@ public class Role {
 
     private RoleStatus roleStatus;
 
-    public Role(String name) {
+    public Role(String name, RoleStatus roleStatus) {
         this.name = name;
+        this.roleStatus = roleStatus;
     }
     public enum RoleStatus{
         ACTIVE,
