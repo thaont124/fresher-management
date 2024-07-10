@@ -4,25 +4,19 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Entity
 @NoArgsConstructor
-public class FresherExercise {
+@Data
+public class Tutorial {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "fresher_id")
-    private Fresher fresher;
-
-    @ManyToOne
-    @JoinColumn(name = "exercise_id")
-    private Exercise exercise;
-
-    @ManyToOne
     @JoinColumn(name = "mentor_id")
     private Mentor mentor;
 
-    private float mark;
+    @ManyToOne
+    @JoinColumn(name = "fresher_id")
+    private Fresher fresher;
 }

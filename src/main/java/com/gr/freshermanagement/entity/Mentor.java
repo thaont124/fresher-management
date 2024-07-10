@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class Mentor extends Employee {
 
-    private String mentorStatus;
 }
