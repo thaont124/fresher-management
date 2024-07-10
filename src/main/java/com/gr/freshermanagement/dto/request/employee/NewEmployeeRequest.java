@@ -29,7 +29,7 @@ public class NewEmployeeRequest {
     private String email;
 
     @NotNull(message = "Department Code is required")
-    private String departmentId;
+    private String departmentCode;
 
     @NotEmpty(message = "Position is required")
     private String position;

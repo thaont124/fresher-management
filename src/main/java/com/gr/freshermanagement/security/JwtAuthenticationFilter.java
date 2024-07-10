@@ -1,10 +1,7 @@
 package com.gr.freshermanagement.security;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gr.freshermanagement.dto.ResponseGeneral;
-import com.gr.freshermanagement.utils.ExceptionHandlerUtil;
-import io.jsonwebtoken.ExpiredJwtException;
+import com.gr.freshermanagement.utils.ExceptionHandlerUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,10 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter  {
@@ -67,7 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter  {
         } catch (Exception ex) {
 
             response.setStatus(401);
-            ExceptionHandlerUtil.handleException(response, ex);
+            ExceptionHandlerUtils.handleException(response, ex);
         }
     }
 

@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -22,12 +21,14 @@ public class WorkingHistory {
     private WorkingStatus status;
 
     @ManyToOne
-    private Facility facility;
+    @JoinColumn(name = "center_id")
+    private Center center;
 
     @ManyToOne
+    @JoinColumn(name = "employee_id")
     private Employee employee;
 
     public enum WorkingStatus{
-        EDUCATING, WORKING, TERMINATED
+        EDUCATING, WORKING, TERMINATED, MANAGE
     }
 }

@@ -31,6 +31,7 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/manager/**").authenticated()
+                .requestMatchers("/api/v1/employee/**").authenticated()
                 .anyRequest().permitAll();
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

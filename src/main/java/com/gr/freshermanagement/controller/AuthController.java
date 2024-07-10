@@ -1,10 +1,11 @@
 package com.gr.freshermanagement.controller;
 
+import com.gr.freshermanagement.dto.ResponseGeneral;
 import com.gr.freshermanagement.dto.request.LoginRequest;
 import com.gr.freshermanagement.dto.request.SignupRequest;
 import com.gr.freshermanagement.service.AccountService;
-import com.gr.freshermanagement.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,11 +20,13 @@ public class AuthController {
 
     @PostMapping("signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest){
-        return ResponseEntity.ok(accountService.signup(signupRequest));
+        return new ResponseEntity<>(ResponseGeneral.of(201, "Signup success",
+                accountService.signup(signupRequest)), HttpStatus.CREATED);
     }
 
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request){
-        return ResponseEntity.ok(accountService.login(request));
+        return new ResponseEntity<>(ResponseGeneral.of(200, "Login success",
+                accountService.login(request)), HttpStatus.OK);
     }
 }

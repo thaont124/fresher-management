@@ -3,21 +3,21 @@ package com.gr.freshermanagement.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import com.gr.freshermanagement.dto.request.employee.NewEmployeeRequest;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
-public class ExcelUtility {
+public class ExcelUtils {
     public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    static String SHEET = "student";
+    static String SHEET = "Sheet1";
     public static boolean hasExcelFormat(MultipartFile file) {
         if (!TYPE.equals(file.getContentType())) {
             return false;
@@ -43,12 +43,18 @@ public class ExcelUtility {
                 int cellIdx = 0;
                 while (cellsInRow.hasNext()) {
                     Cell currentCell = cellsInRow.next();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
                     switch (cellIdx) {
                         case 1:
                             fresher.setName(currentCell.getStringCellValue());
                             break;
                         case 2:
-                            fresher.setDob(LocalDate.parse(currentCell.getStringCellValue()));
+                            if (currentCell.getCellType() == CellType.NUMERIC) {
+                                LocalDate dob = currentCell.getDateCellValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                                fresher.setDob(dob);
+                            } else {
+                                fresher.setDob(LocalDate.parse(currentCell.getStringCellValue()));
+                            }
                             break;
                         case 3:
                             fresher.setAddress(currentCell.getStringCellValue());
@@ -60,10 +66,10 @@ public class ExcelUtility {
                             fresher.setGender(currentCell.getStringCellValue());
                             break;
                         case 6:
-                            fresher.setEmail(String.valueOf(LocalDate.parse(currentCell.getStringCellValue())));
+                            fresher.setEmail(currentCell.getStringCellValue());
                             break;
                         case 7:
-                            fresher.setDepartmentId(String.valueOf(Long.valueOf(currentCell.getStringCellValue())));
+                            fresher.setDepartmentCode(currentCell.getStringCellValue());
                             break;
                         case 8:
                             fresher.setPosition(currentCell.getStringCellValue());

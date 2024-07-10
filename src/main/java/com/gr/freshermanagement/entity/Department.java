@@ -20,10 +20,5 @@ public class Department {
 
     private String code;
 
-    @OneToOne
-    private Language language;
-
-    @OneToMany(mappedBy = "department")
-    private List<Employee> employees;
 }
 

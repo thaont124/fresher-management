@@ -13,11 +13,4 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Fresher extends Employee{
 
-    @Enumerated(EnumType.STRING)
-    private FresherStatus fresherStatus;
-
-
-    public void generateFresherCode(){
-        this.setEmployeeCode("FSH" + this.getId());
-    }
 }

@@ -4,15 +4,20 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Entity
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class Center extends Facility{
+public class Center {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
     private String address;
     private CenterStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "market_id")
+    private Center market;
 
 
     public enum CenterStatus{

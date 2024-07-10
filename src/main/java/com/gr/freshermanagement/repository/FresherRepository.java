@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface FresherRepository extends JpaRepository<Fresher, Long> {
-    @Query("SELECT wh.employee FROM WorkingHistory wh WHERE wh.facility.id = :facilityId AND " +
+    @Query("SELECT wh.employee FROM WorkingHistory wh WHERE wh.center.id = :facilityId AND " +
             "(wh.startTime BETWEEN :startDate AND :endDate OR " +
             "(wh.endTime IS NULL OR wh.endTime BETWEEN :startDate AND :endDate)) AND " +
             "TYPE(wh.employee) = Fresher")

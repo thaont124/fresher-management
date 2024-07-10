@@ -19,10 +19,7 @@ public class EmployeeConverter {
         fresher.setPhone(request.getPhone());
         fresher.setGender(Gender.valueOf(request.getGender().toUpperCase()));
         fresher.setEmail(request.getEmail());
-        fresher.setDepartment(department);
-        fresher.setStatus(EmployeeStatus.ACTIVE);
-        fresher.setFresherStatus(FresherStatus.WAIT);
-        fresher.generateFresherCode();
+        //THIẾU
         return fresher;
     }
 

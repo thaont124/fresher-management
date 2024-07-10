@@ -1,90 +1,60 @@
 package com.gr.freshermanagement.service.impl;
 
 import com.gr.freshermanagement.converter.EmployeeConverter;
-import com.gr.freshermanagement.dto.request.employee.EmployeeUpdateRequest;
+import com.gr.freshermanagement.dto.request.employee.NewEmployeeRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
-import com.gr.freshermanagement.entity.EmployeeStatus;
+import com.gr.freshermanagement.entity.Department;
 import com.gr.freshermanagement.entity.Fresher;
-import com.gr.freshermanagement.entity.FresherStatus;
-import com.gr.freshermanagement.entity.Gender;
+import com.gr.freshermanagement.repository.DepartmentRepository;
 import com.gr.freshermanagement.repository.FresherRepository;
 import com.gr.freshermanagement.service.FresherService;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import com.gr.freshermanagement.utils.ExcelUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class FresherServiceImpl implements FresherService {
-    @Autowired
-    private FresherRepository fresherRepository;
+    private final FresherRepository fresherRepository;
+    private final DepartmentRepository departmentRepository;
 
     @Override
-    public Page<EmployeeResponse> getFreshersPaginated(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("name"));
-        Page<Fresher> freshersPage = fresherRepository.findAll(pageRequest);
-        return freshersPage.map(EmployeeConverter::toFresherResponse);
+    public List<EmployeeResponse> addListFresher(MultipartFile file) {
+        try {
+            //get requests from excel
+            List<NewEmployeeRequest> requests = ExcelUtils.excelToFresherList(file.getInputStream());
+
+            //get all department
+            List<String> departmentCodes = requests.stream()
+                    .map(NewEmployeeRequest::getDepartmentCode)
+                    .toList();
+            List<Department> departments = departmentRepository.findAllByCodeIn(departmentCodes);
+            Map<String, Department> departmentMap = departments.stream()
+                    .collect(Collectors.toMap(Department::getCode, department -> department));
+
+            //convert to fresher and save
+            List<Fresher> freshers = requests.stream()
+                    .map(request -> {
+                        Department department = departmentMap.get(request.getDepartmentCode());
+                        if (department == null) {
+                            throw new RuntimeException("Department not found for id: " + request.getDepartmentCode());
+                        }
+                        return EmployeeConverter.toFresher(request, department);
+                    })
+                    .collect(Collectors.toList());
+            freshers = fresherRepository.saveAll(freshers);
+            return freshers.stream()
+                    .map(EmployeeConverter::toFresherResponse)
+                    .collect(Collectors.toList());
+
+        } catch (IOException ex) {
+            throw new RuntimeException("Excel data is failed to store: " + ex.getMessage());
+        }
     }
-
-    @Override
-    public Page<EmployeeResponse> getFreshersByFacilityAndDateRange(Long facilityId, LocalDate startDate, LocalDate endDate, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
-        Page<Fresher> fresherPage = fresherRepository.findFreshersByFacilityAndDateRange(facilityId, startDate, endDate, pageable);
-        // Assuming you have a method to convert Fresher to EmployeeResponse
-        return fresherPage.map(EmployeeConverter::toFresherResponse);
-    }
-
-
-    @Transactional
-    @Override
-    public void deactivateFresher(Long fresherId) {
-        Fresher fresher = fresherRepository.findById(fresherId)
-                .orElseThrow(() -> new UsernameNotFoundException("Fresher not found with id: " + fresherId));
-
-        fresher.setStatus(EmployeeStatus.INACTIVE);
-        fresherRepository.save(fresher);
-    }
-
-    @Transactional
-    @Override
-    public EmployeeResponse updateFresher(Long id, EmployeeUpdateRequest employeeRequest) {
-        Fresher fresher = fresherRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Fresher not found with id: " + id));
-
-        // Update common fields if they are not null
-        if (employeeRequest.getName() != null) {
-            fresher.setName(employeeRequest.getName());
-        }
-        if (employeeRequest.getDob() != null) {
-            fresher.setDob(employeeRequest.getDob());
-        }
-        if (employeeRequest.getAddress() != null) {
-            fresher.setAddress(employeeRequest.getAddress());
-        }
-        if (employeeRequest.getPhone() != null) {
-            fresher.setPhone(employeeRequest.getPhone());
-        }
-        if (employeeRequest.getGender() != null) {
-            fresher.setGender(Gender.valueOf(employeeRequest.getGender()));
-        }
-        if (employeeRequest.getEmail() != null) {
-            fresher.setEmail(employeeRequest.getEmail());
-        }
-        if (employeeRequest.getFresherStatus() != null) {
-            fresher.setFresherStatus(FresherStatus.valueOf(employeeRequest.getFresherStatus()));
-        }
-
-        // Save updated fresher
-        Fresher savedFresher = fresherRepository.save(fresher);
-
-        // Return response
-        return EmployeeConverter.toFresherResponse(savedFresher);
-    }
-
 }

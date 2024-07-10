@@ -32,7 +32,6 @@ public class EmployeeResponse {
         this.phone = employee.getPhone();
         this.gender = String.valueOf(employee.getGender());
         this.email = employee.getEmail();
-        this.department = employee.getDepartment().getName();
         this.status = String.valueOf(employee.getStatus());
     }
 }

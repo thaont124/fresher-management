@@ -17,7 +17,13 @@ public class Role {
 
     private String name;
 
+    private RoleStatus roleStatus;
+
     public Role(String name) {
         this.name = name;
+    }
+    public enum RoleStatus{
+        ACTIVE,
+        INACTIVE
     }
 }

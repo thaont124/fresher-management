@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-public class ExceptionHandlerUtil {
+public class ExceptionHandlerUtils {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 

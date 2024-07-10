@@ -32,10 +32,6 @@ public class Employee {
     @OneToOne(mappedBy = "employee")
     private Account account;
 
-    @ManyToOne
-    @JoinColumn(name = "department_id")
-    private Department department;
-
     @Enumerated(EnumType.STRING)
     private EmployeeStatus status;
 }
