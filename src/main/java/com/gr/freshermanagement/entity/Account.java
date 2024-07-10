@@ -22,8 +22,14 @@ public class Account {
     private String avatar;
 
     private LocalDateTime createAt;
+    private AccountStatus status;
     @OneToOne
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
+    public enum AccountStatus{
+        NEW,
+        ACTIVE,
+        INACTIVE
+    }
 }

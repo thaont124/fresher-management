@@ -20,6 +20,7 @@ public class Employee {
 
     private String name;
 
+    @Column(unique = true)
     private String employeeCode;
 
     private LocalDate dob;
@@ -38,4 +39,18 @@ public class Employee {
 
     @Enumerated(EnumType.STRING)
     private EmployeeStatus status;
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.employeeCode == null || this.employeeCode.isEmpty()) {
+            this.employeeCode = generateEmployeeCode();
+        }
+    }
+    private String generateEmployeeCode() {
+        StringBuilder baseCode = new StringBuilder(LocalDate.now().getYear() + String.valueOf(this.id));
+        while (baseCode.length() < 12) {
+            baseCode.insert(0, "0");
+        }
+        return baseCode.toString();
+    }
 }

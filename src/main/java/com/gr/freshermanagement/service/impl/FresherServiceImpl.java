@@ -1,6 +1,5 @@
 package com.gr.freshermanagement.service.impl;
 
-import com.gr.freshermanagement.dto.request.employee.NewEmployeeRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.entity.*;
 import com.gr.freshermanagement.repository.DepartmentRepository;
@@ -11,10 +10,12 @@ import com.gr.freshermanagement.service.ExcelService;
 import com.gr.freshermanagement.service.FresherService;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -31,7 +32,12 @@ public class FresherServiceImpl extends ExcelService<Fresher> implements Fresher
         //get requests from excel
         return null;
 
+    }
 
+    @Override
+    public Page<Fresher> getFreshers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return fresherRepository.findAll(pageable);
     }
 
     @Override
