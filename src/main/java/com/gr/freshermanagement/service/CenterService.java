@@ -1,15 +1,18 @@
 package com.gr.freshermanagement.service;
 
+import com.gr.freshermanagement.dto.request.center.CenterUpdateRequest;
+import com.gr.freshermanagement.dto.request.center.NewCenterRequest;
+import com.gr.freshermanagement.dto.response.CenterResponse;
 import com.gr.freshermanagement.entity.Center;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface CenterService {
-    Page<Center> getAllCenters(int page, int size);
+    List<CenterResponse> getAllCenters(int page, int size);
 
-    Center addCenter(Center center);
+    CenterResponse addCenter(NewCenterRequest center);
 
     void deleteCenter(Long id);
 
-    Center updateCenter(Long id, Center center);
+    CenterResponse updateCenter(Long id, CenterUpdateRequest center);
 }

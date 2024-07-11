@@ -5,12 +5,14 @@ import com.gr.freshermanagement.dto.ResponseGeneral;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.service.FresherService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -39,6 +41,19 @@ public class FresherController {
         return new ResponseEntity<>(
                 ResponseGeneral.of(HttpStatus.OK.value(), "Get list success", fresherPage),
                 HttpStatus.OK);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<?> searchFreshers(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam Long centerId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam String languageName) {
+
+        List<EmployeeResponse> freshers = fresherService.filterFresher(page, size, centerId, startDate, endDate, languageName);
+        return ResponseEntity.ok(ResponseGeneral.of(HttpStatus.OK.value(), "Get list success", freshers));
     }
 
 }

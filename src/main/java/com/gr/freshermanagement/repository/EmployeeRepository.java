@@ -29,6 +29,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
                                                               @Param("languageName") String languageName,
                                                               Pageable pageable);
 
-
+    @Query("SELECT e FROM Employee e WHERE e.position = :position ORDER BY e.modifiedTime DESC")
+    Page<Employee> findByPosition(String position, Pageable pageable);
     Employee findByEmail(String email);
 }

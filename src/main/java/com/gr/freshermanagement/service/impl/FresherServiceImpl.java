@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.Normalizer;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
@@ -67,11 +68,21 @@ public class FresherServiceImpl extends ExcelService<NewEmployeeRequest> impleme
     @Override
     public List<EmployeeResponse> getFreshers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Employee> fresherPage = employeeRepository.findAll(pageable);
+        Page<Employee> fresherPage = employeeRepository.findByPosition("Fresher", pageable);
         return fresherPage.stream()
                 .map(fresher -> MapperUtils.toDTO(fresher, EmployeeResponse.class))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<EmployeeResponse> filterFresher(int page, int size, Long centerId, LocalDate startDate, LocalDate endDate, String languageName) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Employee> fresherPage = employeeRepository.findFreshersByCenterAndDateRangeAndLanguage(centerId,startDate, endDate,languageName,pageable);
+        return fresherPage.stream()
+                .map(fresher -> MapperUtils.toDTO(fresher, EmployeeResponse.class))
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     protected NewEmployeeRequest mapRowToEntity(Row row) {
@@ -130,6 +141,7 @@ public class FresherServiceImpl extends ExcelService<NewEmployeeRequest> impleme
                 .gender(Gender.valueOf(fresherRequest.getGender()))
                 .position("Fresher")
                 .status(EmployeeStatus.EDUCATING)
+                .modifiedTime(LocalDateTime.now())
                 .build();
     }
 

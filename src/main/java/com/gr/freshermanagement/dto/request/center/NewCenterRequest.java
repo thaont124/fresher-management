@@ -15,7 +15,6 @@ public class NewCenterRequest {
     @NotEmpty(message = "Address is required")
     private String address;
 
-    @NotEmpty(message = "Status is required")
-    private String status;
+    private Long marketId;
 
 }

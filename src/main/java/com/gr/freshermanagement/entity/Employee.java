@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -36,6 +37,8 @@ public class Employee {
     private String email;
 
     private String position;
+
+    private LocalDateTime modifiedTime;
 
     @OneToOne(mappedBy = "employee")
     private Account account;
