@@ -29,6 +29,6 @@ public class WorkingHistory {
     private Employee employee;
 
     public enum WorkingStatus{
-        EDUCATING, WORKING, TERMINATED, MANAGE
+        EDUCATE, WORK, TERMINATED, MANAGE
     }
 }

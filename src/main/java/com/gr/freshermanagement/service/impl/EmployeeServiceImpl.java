@@ -4,8 +4,8 @@ import com.gr.freshermanagement.dto.request.employee.UpdateEmployeeRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.entity.*;
 import com.gr.freshermanagement.exception.base.NotFoundException;
+import com.gr.freshermanagement.repository.AccountRepository;
 import com.gr.freshermanagement.repository.EmployeeRepository;
-import com.gr.freshermanagement.repository.FresherRepository;
 import com.gr.freshermanagement.service.EmployeeService;
 import com.gr.freshermanagement.utils.MapperUtils;
 import jakarta.transaction.Transactional;
@@ -16,14 +16,20 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
-    private final FresherRepository fresherRepository;
+    private final AccountRepository accountRepository;
 
     @Transactional
     @Override
-    public void deActiveStatus(Long fresherId) {
-        Fresher fresher = fresherRepository.findById(fresherId)
-                .orElseThrow(() -> new NotFoundException("Fresher not found with id: " + fresherId));
-        fresher.setStatus(EmployeeStatus.TERMINATED);
+    public void deactivateStatus(Long accountId) {
+//        deactivate account
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new NotFoundException("Account not found with id: " + accountId));
+        account.setStatus(Account.AccountStatus.INACTIVE);
+
+//        deactivateStatus employee
+        Employee employee = employeeRepository.findByAccount(account)
+                .orElseThrow(() -> new NotFoundException("Employee not found with accountId: " + accountId));
+        employee.setStatus(EmployeeStatus.TERMINATED);
     }
     @Transactional
     @Override

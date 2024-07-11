@@ -14,7 +14,7 @@ public class FresherExercise {
 
     @ManyToOne
     @JoinColumn(name = "fresher_id")
-    private Fresher fresher;
+    private Employee fresher;
 
     @ManyToOne
     @JoinColumn(name = "exercise_id")
@@ -22,7 +22,7 @@ public class FresherExercise {
 
     @ManyToOne
     @JoinColumn(name = "mentor_id")
-    private Mentor mentor;
+    private Employee mentor;
 
     private float mark;
 }

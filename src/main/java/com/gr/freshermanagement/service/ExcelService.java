@@ -31,9 +31,14 @@ public abstract class ExcelService<T> {
                 String sheetName = sheet.getSheetName();
                 Iterator<Row> rowIterator = sheet.iterator();
 
+                // Skip the header row
+                if (rowIterator.hasNext()) {
+                    rowIterator.next();
+                }
+
                 while (rowIterator.hasNext()) {
                     Row row = rowIterator.next();
-                    T item = mapRowToEntity(row, sheetName);
+                    T item = mapRowToEntity(row);
                     data.add(item);
                 }
             }
@@ -43,7 +48,7 @@ public abstract class ExcelService<T> {
     }
 
     // mapping entity
-    protected abstract T mapRowToEntity(Row row, String sheetName);
+    protected abstract T mapRowToEntity(Row row);
 
     // data process
     protected abstract void processData(List<T> data);

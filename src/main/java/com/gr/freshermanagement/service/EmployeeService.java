@@ -8,7 +8,7 @@ import jakarta.transaction.Transactional;
 
 public interface EmployeeService {
     @Transactional
-    void deActiveStatus(Long fresherId);
+    void deactivateStatus(Long fresherId);
 
     @Transactional
     EmployeeResponse updateEmployeeAsAdmin(Account account, UpdateEmployeeRequest adminUpdateEmployeeRequest);

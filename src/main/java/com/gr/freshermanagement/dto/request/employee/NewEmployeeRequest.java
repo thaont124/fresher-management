@@ -1,11 +1,14 @@
 package com.gr.freshermanagement.dto.request.employee;
 
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
+@Builder
 public class NewEmployeeRequest {
     @NotEmpty(message = "Name is required")
     @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
@@ -28,6 +31,10 @@ public class NewEmployeeRequest {
     @Email(message = "Email should be valid")
     private String email;
 
+    @NotNull(message = "Languages list is required")
+    @NotEmpty(message = "Languages list cannot be empty")
+    @Size(min = 1, message = "Languages list must contain at least one language")
+    private List<String> languages;
 
     @NotEmpty(message = "Position is required")
     private String position;

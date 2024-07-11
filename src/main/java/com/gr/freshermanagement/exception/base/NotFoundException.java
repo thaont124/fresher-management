@@ -4,7 +4,7 @@ import com.gr.freshermanagement.exception.BaseException;
 
 public class NotFoundException extends BaseException {
     public NotFoundException() {
-        setCode("com.ncsgroup.profiling.exception.base.BadRequestException");
+        setCode("com.gr.freshermanagement.exception.base.NotFoundException");
         setStatus(404);
     }
 

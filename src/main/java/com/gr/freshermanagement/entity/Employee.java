@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -34,14 +35,20 @@ public class Employee {
 
     private String email;
 
+    private String position;
+
     @OneToOne(mappedBy = "employee")
     private Account account;
 
     @Enumerated(EnumType.STRING)
     private EmployeeStatus status;
 
-    @PrePersist
-    protected void onCreate() {
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<EmployeeLanguage> employeeLanguages;
+
+    @PostPersist
+    @PostUpdate
+    protected void onPostPersist() {
         if (this.employeeCode == null || this.employeeCode.isEmpty()) {
             this.employeeCode = generateEmployeeCode();
         }

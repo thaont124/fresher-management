@@ -1,15 +1,16 @@
 package com.gr.freshermanagement.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,6 +18,7 @@ public class Role {
 
     private String name;
 
+    @Enumerated(EnumType.STRING)
     private RoleStatus roleStatus;
 
     public Role(String name, RoleStatus roleStatus) {
