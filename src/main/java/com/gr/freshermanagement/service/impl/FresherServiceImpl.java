@@ -1,8 +1,11 @@
 package com.gr.freshermanagement.service.impl;
 
+import com.gr.freshermanagement.dto.request.employee.AssignFresherRequest;
+import com.gr.freshermanagement.dto.request.employee.ListAssignFresherRequest;
 import com.gr.freshermanagement.dto.request.employee.NewEmployeeRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.entity.*;
+import com.gr.freshermanagement.exception.base.NotFoundException;
 import com.gr.freshermanagement.repository.*;
 import com.gr.freshermanagement.service.ExcelService;
 import com.gr.freshermanagement.service.FresherService;
@@ -29,6 +32,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +46,8 @@ public class FresherServiceImpl extends ExcelService<NewEmployeeRequest> impleme
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
     private final AccountRoleRepository accountRoleRepository;
+    private final CenterRepository centerRepository;
+    private final WorkingHistoryRepository workingHistoryRepository;
 
     @Override
     public List<EmployeeResponse> addListFresher(MultipartFile file) {
@@ -83,7 +89,29 @@ public class FresherServiceImpl extends ExcelService<NewEmployeeRequest> impleme
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    @Override
+    public void assignFresherToCenter(ListAssignFresherRequest request) {
+        for (AssignFresherRequest assignRequest : request.getListAssign()) {
+            Long centerId = assignRequest.getCenterId();
+            Center center = centerRepository.findById(centerId)
+                    .orElseThrow(() -> new NotFoundException("Center not found with id: " + centerId));
 
+            List<Long> fresherIds = assignRequest.getFresherId();
+            for (Long fresherId : fresherIds) {
+                Employee fresher = employeeRepository.findById(fresherId)
+                        .orElseThrow(() -> new NotFoundException("Employee not found with id: " + fresherId));
+
+                WorkingHistory workingHistory = new WorkingHistory();
+                workingHistory.setCenter(center);
+                workingHistory.setEmployee(fresher);
+                workingHistory.setStartTime(assignRequest.getStartDate());
+                workingHistory.setStatus(WorkingHistory.WorkingStatus.EDUCATE);
+
+                workingHistoryRepository.save(workingHistory);
+            }
+        }
+    }
     @Override
     protected NewEmployeeRequest mapRowToEntity(Row row) {
         //get information
@@ -130,6 +158,7 @@ public class FresherServiceImpl extends ExcelService<NewEmployeeRequest> impleme
             saveLanguageWithEmployee(existingFresher, fresherRequest.getLanguages());
         }
     }
+
 
     private Employee createNewFresher(NewEmployeeRequest fresherRequest) {
         return Employee.builder()

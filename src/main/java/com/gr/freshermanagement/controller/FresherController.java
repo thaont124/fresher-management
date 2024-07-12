@@ -2,6 +2,7 @@ package com.gr.freshermanagement.controller;
 
 
 import com.gr.freshermanagement.dto.ResponseGeneral;
+import com.gr.freshermanagement.dto.request.employee.ListAssignFresherRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.service.FresherService;
 import lombok.RequiredArgsConstructor;
@@ -56,4 +57,9 @@ public class FresherController {
         return ResponseEntity.ok(ResponseGeneral.of(HttpStatus.OK.value(), "Get list success", freshers));
     }
 
+    @PostMapping("assign-fresher")
+    public ResponseEntity<?> assignFresherToCenter(@RequestBody ListAssignFresherRequest request) {
+        fresherService.assignFresherToCenter(request);
+        return ResponseEntity.ok(ResponseGeneral.of(HttpStatus.OK.value(), "Center deleted successfully", null));
+    }
 }

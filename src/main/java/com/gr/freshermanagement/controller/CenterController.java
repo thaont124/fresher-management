@@ -50,9 +50,5 @@ public class CenterController {
         return ResponseEntity.ok(ResponseGeneral.of(HttpStatus.OK.value(), "Center deleted successfully", null));
     }
 
-    @PostMapping("assign-fresher/{centerId}")
-    public ResponseEntity<?> assignFresherToCenter(@PathVariable Long centerId, List<Long> fresherIds) {
 
-        return ResponseEntity.ok(ResponseGeneral.of(HttpStatus.OK.value(), "Center deleted successfully", null));
-    }
 }

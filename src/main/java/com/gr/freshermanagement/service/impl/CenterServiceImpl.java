@@ -37,6 +37,7 @@ public class CenterServiceImpl implements CenterService {
                 .name(request.getName())
                 .address(request.getAddress())
                 .market(market)
+                .status(Center.CenterStatus.ACTIVE)
                 .build();
         return MapperUtils.toDTO(centerRepository.save(center), CenterResponse.class);
     }
