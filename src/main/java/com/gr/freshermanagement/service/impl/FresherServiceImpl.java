@@ -6,6 +6,7 @@ import com.gr.freshermanagement.dto.request.employee.NewEmployeeRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.entity.*;
 import com.gr.freshermanagement.exception.base.NotFoundException;
+import com.gr.freshermanagement.exception.employee.EmployeeInAnotherCenter;
 import com.gr.freshermanagement.repository.*;
 import com.gr.freshermanagement.service.ExcelService;
 import com.gr.freshermanagement.service.FresherService;
@@ -29,10 +30,7 @@ import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -89,27 +87,42 @@ public class FresherServiceImpl extends ExcelService<NewEmployeeRequest> impleme
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     @Override
     public void assignFresherToCenter(ListAssignFresherRequest request) {
-        for (AssignFresherRequest assignRequest : request.getListAssign()) {
-            Long centerId = assignRequest.getCenterId();
-            Center center = centerRepository.findById(centerId)
-                    .orElseThrow(() -> new NotFoundException("Center not found with id: " + centerId));
+        List<WorkingHistory> list = new ArrayList<>();
 
-            List<Long> fresherIds = assignRequest.getFresherId();
-            for (Long fresherId : fresherIds) {
-                Employee fresher = employeeRepository.findById(fresherId)
-                        .orElseThrow(() -> new NotFoundException("Employee not found with id: " + fresherId));
+        //list contain fresherId from request -> check if 1 fresher for >2 center
+        Map<Long, Long> fresherIdRequests = new HashMap<>(); // Map(fresherId, centerId)
+
+        for (AssignFresherRequest assignRequest : request.getListAssign()) {
+
+            //check if center is active
+            Center center = centerRepository.findById(assignRequest.getCenterId()).orElseThrow(()
+                    -> new NotFoundException("Center with id " + assignRequest.getCenterId() + " does not exist"));
+            if (center.getStatus().equals(Center.CenterStatus.INACTIVE)){
+                throw new NotFoundException("Center with id " + assignRequest.getCenterId() + " is inactive");
+            }
+            for (Long fresherId : assignRequest.getFresherId()) {
+                if (fresherIdRequests.containsKey(fresherId)) {
+                    if (!fresherIdRequests.get(fresherId).equals(assignRequest.getCenterId())) {
+                        throw new EmployeeInAnotherCenter("Fresher with id " + fresherId + " cannot be assigned to multiple centers in the same request");
+                    }
+                } else {
+                    fresherIdRequests.put(fresherId, assignRequest.getCenterId());
+                }
+                Long existingCenterId = employeeRepository.findCenterIdByFresherId(fresherId);
+                if (existingCenterId != null && !existingCenterId.equals(assignRequest.getCenterId())) {
+                    throw new EmployeeInAnotherCenter("Fresher with id " + fresherId + " is already assigned to center with id " + existingCenterId);
+                }
 
                 WorkingHistory workingHistory = new WorkingHistory();
+                workingHistory.setEmployee(employeeRepository.findById(fresherId).orElseThrow(() -> new NotFoundException("Fresher with id " + fresherId + " does not exist")));
                 workingHistory.setCenter(center);
-                workingHistory.setEmployee(fresher);
                 workingHistory.setStartTime(assignRequest.getStartDate());
                 workingHistory.setStatus(WorkingHistory.WorkingStatus.EDUCATE);
-
-                workingHistoryRepository.save(workingHistory);
+                list.add(workingHistory);
             }
+            workingHistoryRepository.saveAll(list);
         }
     }
     @Override
@@ -142,10 +155,10 @@ public class FresherServiceImpl extends ExcelService<NewEmployeeRequest> impleme
             if (existingFresher == null) {
 
                 existingFresher = createNewFresher(fresherRequest);
-                employeeRepository.save(existingFresher);
-
                 Account newAccount = createNewAccountForFresher(existingFresher, fresherRequest);
-                accountRepository.save(newAccount);
+
+                existingFresher = employeeRepository.save(existingFresher);
+                newAccount = accountRepository.save(newAccount);
 
                 // set role for account
                 assignRoleToAccount(newAccount);

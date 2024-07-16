@@ -2,6 +2,7 @@ package com.gr.freshermanagement.controller;
 
 import com.gr.freshermanagement.dto.ResponseGeneral;
 import com.gr.freshermanagement.dto.request.center.CenterUpdateRequest;
+import com.gr.freshermanagement.dto.request.center.MergeCentersRequest;
 import com.gr.freshermanagement.dto.request.center.NewCenterRequest;
 import com.gr.freshermanagement.dto.response.CenterResponse;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
@@ -50,5 +51,10 @@ public class CenterController {
         return ResponseEntity.ok(ResponseGeneral.of(HttpStatus.OK.value(), "Center deleted successfully", null));
     }
 
+    @PutMapping("/merger")
+    public ResponseEntity<?> mergeCenter(@RequestBody MergeCentersRequest request){
+        CenterResponse response = centerService.mergeCenters(request);
+        return ResponseEntity.ok(ResponseGeneral.of(200, "Centers merged successfully", response));
+    }
 
 }

@@ -13,4 +13,12 @@ import java.util.List;
 @Repository
 public interface WorkingHistoryRepository extends JpaRepository<WorkingHistory, Long> {
 
+    @Query("SELECT wh FROM WorkingHistory wh "
+            + "WHERE wh.center.id = :centerId AND "
+            + "wh.endTime IS NULL AND "
+            + "(wh.status = 'WORK' "
+            + "OR wh.status = 'EDUCATE' "
+            + "OR wh.status = 'MANAGE')")
+    List<WorkingHistory> findCurrentlyEmployeeInCenter(@Param("centerId") Long centerId);
+
 }

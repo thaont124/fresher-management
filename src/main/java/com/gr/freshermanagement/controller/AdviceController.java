@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gr.freshermanagement.dto.ResponseGeneral;
 import com.gr.freshermanagement.exception.account.ExistUsernameException;
 import com.gr.freshermanagement.exception.account.UsernamePasswordIncorrectException;
+import com.gr.freshermanagement.exception.base.NotFoundException;
 import com.gr.freshermanagement.exception.department.DepartmentNotFoundException;
+import com.gr.freshermanagement.exception.employee.EmployeeInAnotherCenter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -12,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -34,9 +37,20 @@ public class AdviceController {
         return new ResponseEntity<>(ResponseGeneral.of(400, "Bad Request", ex.getMes()), HttpStatus.BAD_REQUEST);
 
     }
+    @ExceptionHandler(EmployeeInAnotherCenter.class)
+    public ResponseEntity<ResponseGeneral<String>> handleEmployeeInAnotherCenter(EmployeeInAnotherCenter ex) {
+        return new ResponseEntity<>(ResponseGeneral.of(400, "Bad Request", ex.getMes()), HttpStatus.BAD_REQUEST);
+
+    }
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ResponseGeneral<String>> handleExpiredTokenException(NoResourceFoundException ex) {
+        logger.error("Error: ", ex.getMessage());
+        return new ResponseEntity<>(ResponseGeneral.of(404, "Not Found", ex.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ResponseGeneral<String>> handleNotFoundException(NotFoundException ex) {
         logger.error("Error: ", ex.getMessage());
         return new ResponseEntity<>(ResponseGeneral.of(404, "Not Found", ex.getMessage()), HttpStatus.NOT_FOUND);
     }
@@ -68,6 +82,11 @@ public class AdviceController {
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<ResponseGeneral<String>> handleAuthorizationDeniedException(AuthorizationDeniedException ex) {
         return new ResponseEntity<>(ResponseGeneral.of(403, "Don't have permission to access this resource", null), HttpStatus.FORBIDDEN );
+
+    }
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ResponseGeneral<String>> handleAuthorizationDeniedException(AccessDeniedException ex) {
+        return new ResponseEntity<>(ResponseGeneral.of(403, ex.getMessage(), null), HttpStatus.FORBIDDEN );
 
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)

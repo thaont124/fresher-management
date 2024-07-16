@@ -6,6 +6,8 @@ import com.gr.freshermanagement.entity.Account;
 import com.gr.freshermanagement.entity.Employee;
 import jakarta.transaction.Transactional;
 
+import java.util.Optional;
+
 public interface EmployeeService {
     @Transactional
     void deactivateStatus(Long fresherId);
@@ -16,4 +18,6 @@ public interface EmployeeService {
 
     @Transactional
     EmployeeResponse updateEmployeeAsEmployee(Account account, UpdateEmployeeRequest employeeUpdateEmployeeRequest);
+
+    Optional<Employee> findFresherByAccountUsername(String username);
 }

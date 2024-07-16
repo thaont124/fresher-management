@@ -2,8 +2,10 @@ package com.gr.freshermanagement.controller;
 
 
 import com.gr.freshermanagement.dto.ResponseGeneral;
+import com.gr.freshermanagement.dto.request.excercise.GradeRequest;
 import com.gr.freshermanagement.dto.request.employee.ListAssignFresherRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
+import com.gr.freshermanagement.service.ExerciseService;
 import com.gr.freshermanagement.service.FresherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -60,6 +62,7 @@ public class FresherController {
     @PostMapping("assign-fresher")
     public ResponseEntity<?> assignFresherToCenter(@RequestBody ListAssignFresherRequest request) {
         fresherService.assignFresherToCenter(request);
-        return ResponseEntity.ok(ResponseGeneral.of(HttpStatus.OK.value(), "Center deleted successfully", null));
+        return ResponseEntity.ok(ResponseGeneral.of(HttpStatus.OK.value(), "Assign fresher successfully", null));
     }
+
 }

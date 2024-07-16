@@ -18,10 +18,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class EmployeeController {
     private final EmployeeService employeeService;
 
-    @GetMapping("add")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<?> uploadListFresher(@RequestParam MultipartFile file) {
-        return new ResponseEntity<>(HttpStatus.OK);
 
-    }
 }

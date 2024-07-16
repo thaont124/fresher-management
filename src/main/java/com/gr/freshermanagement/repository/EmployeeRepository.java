@@ -32,4 +32,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query("SELECT e FROM Employee e WHERE e.position = :position ORDER BY e.modifiedTime DESC")
     Page<Employee> findByPosition(String position, Pageable pageable);
     Employee findByEmail(String email);
+
+    @Query("SELECT wh.center.id FROM WorkingHistory wh WHERE wh.employee.id = :fresherId " +
+            "AND wh.endTime IS NULL")
+    Long findCenterIdByFresherId(@Param("fresherId") Long fresherId);
 }

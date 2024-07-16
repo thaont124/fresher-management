@@ -18,6 +18,7 @@ public class WorkingHistory {
 
     private LocalDate endTime;
 
+    @Enumerated(EnumType.STRING)
     private WorkingStatus status;
 
     @ManyToOne

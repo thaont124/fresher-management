@@ -13,6 +13,8 @@ public class Center {
     private Long id;
     private String name;
     private String address;
+
+    @Enumerated(EnumType.STRING)
     private CenterStatus status;
 
     @ManyToOne

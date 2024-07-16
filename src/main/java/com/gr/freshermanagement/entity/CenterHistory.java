@@ -24,9 +24,7 @@ public class CenterHistory {
     @JoinColumn(name = "recently_center_id")
     private Center recentlyCenter;
 
-    private LocalDateTime actionDate;
-
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "previous_center_id")
     private Center previousCenter;
 
