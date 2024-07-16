@@ -16,6 +16,8 @@ public class Exercise {
 
     private String name;
 
+    private String exerciseCode;
+
     private String description;
 
     private LocalDate startDate;

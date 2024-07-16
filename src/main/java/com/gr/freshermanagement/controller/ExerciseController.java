@@ -3,6 +3,7 @@ package com.gr.freshermanagement.controller;
 import com.gr.freshermanagement.dto.ResponseGeneral;
 import com.gr.freshermanagement.dto.request.excercise.GradeRequest;
 import com.gr.freshermanagement.dto.request.excercise.RegisterExerciseRequest;
+import com.gr.freshermanagement.dto.response.FresherExerciseResponse;
 import com.gr.freshermanagement.entity.Employee;
 import com.gr.freshermanagement.entity.FresherExercise;
 import com.gr.freshermanagement.exception.base.NotFoundException;
@@ -43,7 +44,7 @@ public class ExerciseController {
         Employee fresher = employeeService.findFresherByAccountUsername(username)
                 .orElseThrow(() -> new NotFoundException("Fresher not found with username: " + username));
 
-        List<FresherExercise> grades = exerciseService.viewGrades(fresher.getId());
+        List<FresherExerciseResponse> grades = exerciseService.viewGrades(fresher.getId());
         return ResponseEntity.ok(ResponseGeneral.of(200, "view success",grades));
     }
 }
