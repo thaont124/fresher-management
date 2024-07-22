@@ -17,6 +17,9 @@ public interface EmployeeService {
 
 
     @Transactional
+    EmployeeResponse updateEmployee(String username, Employee employeeDetails);
+
+    @Transactional
     EmployeeResponse updateEmployeeAsEmployee(Account account, UpdateEmployeeRequest employeeUpdateEmployeeRequest);
     Optional<Employee> findFresherByAccountUsername(String username);
     Employee findEmployeeByUsername(String username);

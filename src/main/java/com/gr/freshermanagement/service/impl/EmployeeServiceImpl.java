@@ -37,8 +37,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> new NotFoundException("Employee not found with accountId: " + accountId));
         employee.setStatus(EmployeeStatus.TERMINATED);
     }
-    @Transactional
-    @Override
     public EmployeeResponse updateEmployeeAsAdmin(Account account, UpdateEmployeeRequest adminUpdateEmployeeRequest) {
         Employee employee = employeeRepository.findByAccount(account)
                 .orElseGet(() -> createNewEmployee(adminUpdateEmployeeRequest));
@@ -50,6 +48,36 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         return MapperUtils.toDTO(employee, EmployeeResponse.class);
+    }
+
+    @Transactional
+    @Override
+    public EmployeeResponse updateEmployee(String username, Employee employeeDetails) {
+        Optional<Account> accountOptional = accountRepository.findByUsername(username);
+        if (accountOptional.isPresent()) {
+            Account account = accountOptional.get();
+            Employee employee = account.getEmployee();
+            if (employee == null) {
+                employee = new Employee();
+                employee.setAccount(account);
+                account.setEmployee(employee);
+            }
+            employee.setName(employeeDetails.getName());
+            employee.setDob(employeeDetails.getDob());
+            employee.setAddress(employeeDetails.getAddress());
+            employee.setPhone(employeeDetails.getPhone());
+            employee.setGender(employeeDetails.getGender());
+            employee.setEmail(employeeDetails.getEmail());
+            employee.setPosition(employeeDetails.getPosition());
+            employee.setModifiedTime(employeeDetails.getModifiedTime());
+            employee.setStatus(employeeDetails.getStatus());
+
+            Employee savedEmployee = employeeRepository.save(employee);
+            accountRepository.save(account);
+            return MapperUtils.toDTO(savedEmployee, EmployeeResponse.class);
+        } else {
+            throw new RuntimeException("Account not found for username: " + username);
+        }
     }
 
     @Transactional
