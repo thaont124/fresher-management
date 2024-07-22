@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class RegisterExerciseRequest {
+
     private Long fresherId;
     private Long exerciseId;
 }

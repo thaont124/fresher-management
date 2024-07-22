@@ -20,20 +20,7 @@ public class EmployeeResponse {
     private String phone;
     private String gender;
     private String email;
-    private String department;
     private String status;
     private String avtUrl;
-
-    public EmployeeResponse(Employee employee) {
-        this.id = employee.getId();
-        this.name = employee.getName();
-        this.employeeCode = employee.getEmployeeCode();
-        this.dob = employee.getDob();
-        this.address = employee.getAddress();
-        this.phone = employee.getPhone();
-        this.gender = String.valueOf(employee.getGender());
-        this.email = employee.getEmail();
-        this.status = String.valueOf(employee.getStatus());
-    }
 }
 

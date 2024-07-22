@@ -39,6 +39,7 @@ public class DataInitializer implements CommandLineRunner {
             adminAccount.setUsername("admin");
             adminAccount.setPassword(passwordEncoder.encode("adminpassword"));
             adminAccount.setCreateAt(LocalDateTime.now());
+            adminAccount.setStatus(Account.AccountStatus.NEW);
             accountRepository.save(adminAccount);
 
             AccountRole adminAccountRole = new AccountRole(adminAccount, adminRole);

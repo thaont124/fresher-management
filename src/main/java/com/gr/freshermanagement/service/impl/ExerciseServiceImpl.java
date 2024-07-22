@@ -1,8 +1,11 @@
 package com.gr.freshermanagement.service.impl;
 
+import com.gr.freshermanagement.dto.request.excercise.ExerciseRequest;
 import com.gr.freshermanagement.dto.request.excercise.GradeRequest;
 import com.gr.freshermanagement.dto.request.excercise.RegisterExerciseRequest;
 import com.gr.freshermanagement.dto.response.FresherExerciseResponse;
+import com.gr.freshermanagement.dto.response.statistic.ExerciseResultResponse;
+import com.gr.freshermanagement.dto.response.statistic.FresherScoreStatisticResponse;
 import com.gr.freshermanagement.entity.Employee;
 import com.gr.freshermanagement.entity.Exercise;
 import com.gr.freshermanagement.entity.FresherExercise;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,32 +44,69 @@ public class ExerciseServiceImpl implements ExerciseService {
         FresherExercise fresherExercise = new FresherExercise();
         fresherExercise.setFresher(fresher);
         fresherExercise.setExercise(exercise);
-        fresherExercise.setSubmitDate(LocalDateTime.now());
         fresherExerciseRepository.save(fresherExercise);
     }
 
     @Transactional
-    public void gradeExercise(GradeRequest request) {
+    public void gradeExercise(GradeRequest request, Employee mentor) {
         FresherExercise fresherExercise = fresherExerciseRepository.findById(request.getFresherExerciseId())
                 .orElseThrow(() -> new NotFoundException("FresherExercise not found"));
 
         fresherExercise.setMark(request.getMark());
+        fresherExercise.setSubmitDate(request.getSubmitDate());
+        fresherExercise.setMentor(mentor);
         fresherExerciseRepository.save(fresherExercise);
     }
 
     public List<FresherExerciseResponse> viewGrades(Long fresherId) {
         List<FresherExercise> fresherExercises = fresherExerciseRepository.findByFresherId(fresherId);
 
-        // Chuyển đổi danh sách FresherExercise sang FresherExerciseResponse
+
         return MapperUtils.toDTOs(fresherExercises, FresherExerciseResponse.class);
     }
 
-    public List<FresherScoreStatsProjection> getFresherScoreStats(LocalDate date) {
-        return fresherExerciseRepository.findFresherScoresByDate(date);
+    public List<FresherScoreStatisticResponse> getFresherScoreStats(LocalDate startDate, LocalDate endDate,
+                                                                    Double minScore, Double maxScore) {
+        LocalDateTime startTime = startDate.atStartOfDay();
+        LocalDateTime endTime = endDate.plusDays(1).atStartOfDay();
+        List<FresherScoreStatsProjection> projections =
+                fresherExerciseRepository.findFresherScoresByDateRange(startTime, endTime, minScore, maxScore);
+
+        return projections.stream()
+                .map(projection -> {
+                    List<FresherExercise> exercises = fresherExerciseRepository.findExercisesByFresher(projection.getFresherId());
+                    List<ExerciseResultResponse> exerciseResponses = exercises.stream()
+                            .map(exercise -> new ExerciseResultResponse(exercise.getId(), exercise.getMark(), exercise.getSubmitDate()))
+                            .collect(Collectors.toList());
+                    return new FresherScoreStatisticResponse(
+                            projection.getFresherId(),
+                            projection.getFresherName(),
+                            projection.getAverageScore(),
+                            projection.getTotalExams(),
+                            exerciseResponses
+                    );
+                })
+                .sorted(Comparator.comparing(FresherScoreStatisticResponse::getAverageScore).reversed())
+                .collect(Collectors.toList());
     }
+
+
 
     @Override
     public List<CenterFresherCountProjection> getFresherScoresByCenterAndDate(LocalDate date) {
         return fresherExerciseRepository.findFresherScoresByCenterAndDate(date);
+    }
+
+    @Override
+    public void createExercise(ExerciseRequest requestDTO) {
+        Exercise exercise = new Exercise();
+        exercise.setName(requestDTO.getName());
+        exercise.setDescription(requestDTO.getDescription());
+        exercise.setStartDate(requestDTO.getStartDate());
+        exercise.setDeadline(requestDTO.getDeadline());
+
+        // Additional logic if needed
+
+        exerciseRepository.save(exercise);
     }
 }

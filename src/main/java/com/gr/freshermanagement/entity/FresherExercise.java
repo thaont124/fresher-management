@@ -28,5 +28,5 @@ public class FresherExercise {
     @JoinColumn(name = "mentor_id")
     private Employee mentor;
 
-    private float mark;
+    private double mark;
 }

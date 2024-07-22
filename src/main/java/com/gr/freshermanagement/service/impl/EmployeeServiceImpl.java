@@ -78,6 +78,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.findByAccount(account);
     }
 
+    @Override
+    public Employee findEmployeeByUsername(String username) {
+        Account account = accountRepository.findByUsername(username).orElseThrow(
+                () -> new NotFoundException("Account not found with username: " + username)
+        );
+        return employeeRepository.findByAccount(account).orElseThrow(
+                () -> new NotFoundException("Account " + username + " is not assigned to any employee")
+        );
+    }
+
     private Employee createNewEmployee(UpdateEmployeeRequest request) {
         Employee newEmployee = Employee.builder()
                 .name(request.getName())

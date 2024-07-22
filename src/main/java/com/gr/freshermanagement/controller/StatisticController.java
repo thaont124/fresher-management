@@ -1,10 +1,12 @@
 package com.gr.freshermanagement.controller;
 
+import com.gr.freshermanagement.dto.ResponseGeneral;
+import com.gr.freshermanagement.dto.response.statistic.FresherScoreStatisticResponse;
 import com.gr.freshermanagement.projection.CenterFresherCountProjection;
-import com.gr.freshermanagement.projection.FresherScoreStatsProjection;
 import com.gr.freshermanagement.service.ExerciseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,16 +23,28 @@ public class StatisticController {
     private final ExerciseService exerciseService;
     @GetMapping("/fresher/score")
     public ResponseEntity<?> getFresherScoreStats(
-            @RequestParam("date") LocalDate date) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam Double minScore,
+            @RequestParam Double maxScore) {
+        if (endDate == null) {
+            endDate = LocalDate.now();
+            startDate = LocalDate.now().minusDays(30);
+        }
 
-        List<FresherScoreStatsProjection> stats = exerciseService.getFresherScoreStats(date);
-        return ResponseEntity.ok(stats);
+        List<FresherScoreStatisticResponse> stats = exerciseService.getFresherScoreStats(startDate, endDate, minScore, maxScore);
+        return ResponseEntity.ok(ResponseGeneral.of(HttpStatus.OK.value(), "Get statistic success", stats));
+
     }
 
     @GetMapping("/fresher/center")
     public ResponseEntity<?> getFresherScoresByCenterAndDate(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        if (date == null) {
+            date = LocalDate.now();
+        }
         List<CenterFresherCountProjection> fresherScores = exerciseService.getFresherScoresByCenterAndDate(date);
-        return ResponseEntity.ok(fresherScores);
+        return ResponseEntity.ok(ResponseGeneral.of(HttpStatus.OK.value(), "Get statistic success", fresherScores));
+
     }
 }

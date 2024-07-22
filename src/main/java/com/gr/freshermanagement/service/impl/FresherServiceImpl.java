@@ -156,6 +156,7 @@ public class FresherServiceImpl extends ExcelService<NewEmployeeRequest> impleme
 
                 existingFresher = createNewFresher(fresherRequest);
                 Account newAccount = createNewAccountForFresher(existingFresher, fresherRequest);
+                newAccount.setCreateAt(LocalDateTime.now());
 
                 existingFresher = employeeRepository.save(existingFresher);
                 newAccount = accountRepository.save(newAccount);

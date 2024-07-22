@@ -24,8 +24,6 @@ public class Exercise {
 
     private LocalDate deadline;
 
-    private String status;
-
     @OneToMany(mappedBy = "exercise")
     private List<FresherExercise> fresherExercises;
 }
