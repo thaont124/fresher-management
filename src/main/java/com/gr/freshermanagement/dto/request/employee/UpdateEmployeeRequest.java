@@ -16,6 +16,7 @@ public class UpdateEmployeeRequest {
     private String address;
     private String phone;
     private String gender;
+    private String position;
     private String email;
     private String fresherStatus;
     private MultipartFile avt;

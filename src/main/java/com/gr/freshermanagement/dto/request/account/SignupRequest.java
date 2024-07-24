@@ -1,4 +1,4 @@
-package com.gr.freshermanagement.dto.request;
+package com.gr.freshermanagement.dto.request.account;
 
 import com.gr.freshermanagement.entity.Role;
 import lombok.AllArgsConstructor;

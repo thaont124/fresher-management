@@ -1,13 +1,8 @@
 package com.gr.freshermanagement.service;
 
-import com.gr.freshermanagement.dto.request.LoginRequest;
-import com.gr.freshermanagement.dto.request.SignupRequest;
+import com.gr.freshermanagement.dto.request.account.LoginRequest;
+import com.gr.freshermanagement.dto.request.account.SignupRequest;
 import com.gr.freshermanagement.dto.response.AuthenticationResponse;
-import com.gr.freshermanagement.entity.Account;
-import com.gr.freshermanagement.entity.Role;
-
-import java.util.List;
-import java.util.Optional;
 
 public interface AccountService {
     AuthenticationResponse signup(SignupRequest signupRequest);

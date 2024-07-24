@@ -193,7 +193,7 @@ public class FresherServiceImpl extends ExcelService<NewEmployeeRequest> impleme
                 .username(fresherRequest.getEmail())
                 .password(passwordEncoder.encode(generatePassword(fresherRequest.getName(), fresherRequest.getDob())))
                 .employee(fresher)
-                .status(Account.AccountStatus.NEW)
+                .status(Account.AccountStatus.NEW_FRESHER)
                 .build();
     }
 

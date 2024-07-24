@@ -1,6 +1,7 @@
 package com.gr.freshermanagement.controller;
 
 import com.gr.freshermanagement.dto.ResponseGeneral;
+import com.gr.freshermanagement.dto.request.employee.UpdateEmployeeRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.entity.Employee;
 import com.gr.freshermanagement.service.AccountService;
@@ -23,7 +24,7 @@ public class EmployeeController {
 
 
     @PatchMapping("update")
-    public ResponseEntity<?> updateInfo(@RequestBody Employee employeeDetails){
+    public ResponseEntity<?> updateInfo(@RequestBody UpdateEmployeeRequest employeeDetails){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 

@@ -34,7 +34,8 @@ public class Account {
     private Employee employee;
 
     public enum AccountStatus{
-        NEW,
+        NEW_EMPLOYEE,
+        NEW_FRESHER,
         ACTIVE,
         INACTIVE
     }

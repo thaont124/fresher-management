@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,7 +53,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Transactional
     @Override
-    public EmployeeResponse updateEmployee(String username, Employee employeeDetails) {
+    public EmployeeResponse updateEmployee(String username, UpdateEmployeeRequest employeeDetails) {
         Optional<Account> accountOptional = accountRepository.findByUsername(username);
         if (accountOptional.isPresent()) {
             Account account = accountOptional.get();
@@ -66,11 +67,11 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setDob(employeeDetails.getDob());
             employee.setAddress(employeeDetails.getAddress());
             employee.setPhone(employeeDetails.getPhone());
-            employee.setGender(employeeDetails.getGender());
+            employee.setGender(Gender.valueOf(employeeDetails.getGender()));
             employee.setEmail(employeeDetails.getEmail());
             employee.setPosition(employeeDetails.getPosition());
-            employee.setModifiedTime(employeeDetails.getModifiedTime());
-            employee.setStatus(employeeDetails.getStatus());
+            employee.setModifiedTime(LocalDateTime.now());
+            employee.setStatus(account.getStatus().name().equals("NEW_FRESHER") ? EmployeeStatus.EDUCATING : EmployeeStatus.WORKING);
 
             Employee savedEmployee = employeeRepository.save(employee);
             accountRepository.save(account);

@@ -17,7 +17,7 @@ public interface EmployeeService {
 
 
     @Transactional
-    EmployeeResponse updateEmployee(String username, Employee employeeDetails);
+    EmployeeResponse updateEmployee(String username, UpdateEmployeeRequest employeeDetails);
 
     @Transactional
     EmployeeResponse updateEmployeeAsEmployee(Account account, UpdateEmployeeRequest employeeUpdateEmployeeRequest);
