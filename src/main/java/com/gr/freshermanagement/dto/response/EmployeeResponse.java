@@ -3,6 +3,7 @@ package com.gr.freshermanagement.dto.response;
 import com.gr.freshermanagement.entity.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class EmployeeResponse {
     private Long id;
     private String name;
@@ -22,5 +24,6 @@ public class EmployeeResponse {
     private String email;
     private String status;
     private String avtUrl;
+    private String position;
 }
 

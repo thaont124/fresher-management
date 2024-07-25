@@ -1,5 +1,7 @@
 package com.gr.freshermanagement.service.impl;
 
+import com.gr.freshermanagement.commons.EmployeeStatus;
+import com.gr.freshermanagement.commons.Gender;
 import com.gr.freshermanagement.dto.request.employee.UpdateEmployeeRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.entity.*;

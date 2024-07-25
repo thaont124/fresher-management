@@ -1,5 +1,7 @@
 package com.gr.freshermanagement.entity;
 
+import com.gr.freshermanagement.commons.EmployeeStatus;
+import com.gr.freshermanagement.commons.Gender;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

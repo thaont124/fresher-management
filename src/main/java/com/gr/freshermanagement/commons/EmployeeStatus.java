@@ -1,4 +1,4 @@
-package com.gr.freshermanagement.entity;
+package com.gr.freshermanagement.commons;
 
 public enum EmployeeStatus {
     EDUCATING,
