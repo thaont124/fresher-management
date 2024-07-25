@@ -115,4 +115,11 @@ public class AccountServiceImpl implements AccountService {
             throw new UsernamePasswordIncorrectException();
         }
     }
+
+    @Override
+    public void updateAccount(String email, String newPassword) {
+        Account account = accountRepository.findByUsername(email).orElseThrow();
+        account.setPassword(passwordEncoder.encode(newPassword));
+        accountRepository.save(account);
+    }
 }

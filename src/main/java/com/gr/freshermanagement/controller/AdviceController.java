@@ -94,6 +94,7 @@ public class AdviceController {
         return new ResponseEntity<>(ResponseGeneral.of(400, ex.getFieldError().getDefaultMessage(), null), HttpStatus.BAD_REQUEST);
 
     }
+
 //    @ExceptionHandler(Exception.class)
 //    public ResponseEntity<ResponseGeneral<String>> handleException(Exception ex) {
 //        return new ResponseEntity<>(ResponseGeneral.of(500, "Internal Server Error", ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);

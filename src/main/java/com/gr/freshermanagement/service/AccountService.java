@@ -8,9 +8,7 @@ public interface AccountService {
     AuthenticationResponse signup(SignupRequest signupRequest);
     AuthenticationResponse login (LoginRequest loginRequest);
 
+    void updateAccount(String email, String newPassword);
 
-    //    Response sendOtp();
-//    Response validateOtp();
-//    Response resetPassword();
-//    Response changePassword();
+
 }
