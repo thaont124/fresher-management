@@ -30,7 +30,7 @@ public class SecurityConfiguration {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/manager/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/v1/manager/**").hasAnyRole("DIRECTOR", "ADMIN")
                 .requestMatchers("/api/v1/employee/**").authenticated()
                 .anyRequest().permitAll();

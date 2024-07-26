@@ -16,20 +16,34 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping(value = "api/v1/employee")
+@RequestMapping(value = "api/v1")
 @RequiredArgsConstructor
 public class EmployeeController {
     private final EmployeeService employeeService;
     private final AccountService accountService;
 
 
-    @PatchMapping("update")
+    @PatchMapping("employee/update")
     public ResponseEntity<?> updateInfo(@RequestBody UpdateEmployeeRequest employeeDetails){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
         EmployeeResponse updatedEmployee = employeeService.updateEmployee(username, employeeDetails);
         return ResponseEntity.ok(ResponseGeneral.of(200, "update success", updatedEmployee));
+    }
+
+    @DeleteMapping("/manager/delete/{employeeId}")
+    public ResponseEntity<?> delete(@PathVariable Long employeeId){
+        employeeService.deactivateStatus(employeeId);
+        return ResponseEntity.ok(ResponseGeneral.of(200, "delete success", null));
+    }
+
+    @PatchMapping("employee/change-avatar")
+    public ResponseEntity<?> changeAvatar(@RequestParam MultipartFile avatar){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        employeeService.changeAvatar(username, avatar);
+        return ResponseEntity.ok(ResponseGeneral.of(200, "change avatar success", null));
     }
 
 }
