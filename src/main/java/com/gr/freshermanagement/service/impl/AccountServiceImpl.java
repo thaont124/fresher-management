@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -117,9 +118,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void updateAccount(String email, String newPassword) {
+    public void changePassword(String username, String email, String newPassword) {
         Account account = accountRepository.findByUsername(email).orElseThrow();
         account.setPassword(passwordEncoder.encode(newPassword));
         accountRepository.save(account);
+
+        List<RefreshToken> refreshTokens = refreshTokenRepository.findByAccount(account);
+        refreshTokenRepository.deleteAll(refreshTokens);
     }
 }

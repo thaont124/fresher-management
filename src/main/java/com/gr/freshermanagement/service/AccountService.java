@@ -8,7 +8,7 @@ public interface AccountService {
     AuthenticationResponse signup(SignupRequest signupRequest);
     AuthenticationResponse login (LoginRequest loginRequest);
 
-    void updateAccount(String email, String newPassword);
+    void changePassword(String username, String email, String newPassword);
 
 
 }
