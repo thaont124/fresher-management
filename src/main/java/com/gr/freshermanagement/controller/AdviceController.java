@@ -2,6 +2,7 @@ package com.gr.freshermanagement.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gr.freshermanagement.dto.ResponseGeneral;
+import com.gr.freshermanagement.exception.account.EmailNotValid;
 import com.gr.freshermanagement.exception.account.ExistUsernameException;
 import com.gr.freshermanagement.exception.account.UsernamePasswordIncorrectException;
 import com.gr.freshermanagement.exception.base.NotFoundException;
@@ -34,49 +35,49 @@ public class AdviceController {
     private final MessageSource messageSource;
     @ExceptionHandler(DepartmentNotFoundException.class)
     public ResponseEntity<ResponseGeneral<String>> handleDepartmentNotFoundException(DepartmentNotFoundException ex) {
-        return new ResponseEntity<>(ResponseGeneral.of(400, "Bad Request", ex.getMes()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ResponseGeneral.of(400, ex.getMes(), null), HttpStatus.BAD_REQUEST);
 
     }
     @ExceptionHandler(EmployeeInAnotherCenter.class)
     public ResponseEntity<ResponseGeneral<String>> handleEmployeeInAnotherCenter(EmployeeInAnotherCenter ex) {
-        return new ResponseEntity<>(ResponseGeneral.of(400, "Bad Request", ex.getMes()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ResponseGeneral.of(400, ex.getMes(), null), HttpStatus.BAD_REQUEST);
 
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ResponseGeneral<String>> handleExpiredTokenException(NoResourceFoundException ex) {
         logger.error("Error: ", ex.getMessage());
-        return new ResponseEntity<>(ResponseGeneral.of(404, "Not Found", ex.getMessage()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(ResponseGeneral.of(404, ex.getMessage(), null), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ResponseGeneral<String>> handleNotFoundException(NotFoundException ex) {
         logger.error("Error: ", ex.getMessage());
-        return new ResponseEntity<>(ResponseGeneral.of(404, "Not Found", ex.getMessage()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(ResponseGeneral.of(404, ex.getMessage(), null), HttpStatus.NOT_FOUND);
     }
 
 
     @ExceptionHandler(ExistUsernameException.class)
     public ResponseEntity<ResponseGeneral<String>> handleExistUsernameException(ExistUsernameException ex) {
-        return new ResponseEntity<>(ResponseGeneral.of(400, "Bad Request", ex.getMes()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ResponseGeneral.of(400, ex.getMes(), null), HttpStatus.BAD_REQUEST);
 
     }
 
     @ExceptionHandler(UsernamePasswordIncorrectException.class)
     public ResponseEntity<ResponseGeneral<String>> handleUsernamePasswordIncorrectException(UsernamePasswordIncorrectException ex) {
-        return new ResponseEntity<>(ResponseGeneral.of(400, "Bad Request", ex.getMes()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ResponseGeneral.of(400,  ex.getMes(), null), HttpStatus.BAD_REQUEST);
 
     }
 
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ResponseGeneral<String>> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
-        return new ResponseEntity<>(ResponseGeneral.of(405, "Method Not Allowed", ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
+        return new ResponseEntity<>(ResponseGeneral.of(405, ex.getMessage(), null), HttpStatus.METHOD_NOT_ALLOWED);
 
     }
     @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
     public ResponseEntity<ResponseGeneral<String>> handleHttpMediaTypeNotAcceptableException(HttpMediaTypeNotAcceptableException ex) {
-        return new ResponseEntity<>(ResponseGeneral.of(406, "Not Acceptable", ex.getMessage()), HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(ResponseGeneral.of(406, ex.getMessage(), null), HttpStatus.NOT_ACCEPTABLE);
 
     }
     @ExceptionHandler(AuthorizationDeniedException.class)
@@ -92,6 +93,12 @@ public class AdviceController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseGeneral<String>> handleHttpMediaTypeNotAcceptableException(MethodArgumentNotValidException ex) {
         return new ResponseEntity<>(ResponseGeneral.of(400, ex.getFieldError().getDefaultMessage(), null), HttpStatus.BAD_REQUEST);
+
+    }
+
+    @ExceptionHandler(EmailNotValid.class)
+    public ResponseEntity<ResponseGeneral<String>> handleEmailNotValid(EmailNotValid ex) {
+        return new ResponseEntity<>(ResponseGeneral.of(400, ex.getMes(), null), HttpStatus.BAD_REQUEST);
 
     }
 
