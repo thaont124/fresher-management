@@ -5,6 +5,7 @@ import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.entity.Account;
 import com.gr.freshermanagement.entity.Employee;
 import jakarta.transaction.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -24,4 +25,7 @@ public interface EmployeeService {
     Optional<Employee> findFresherByAccountUsername(String username);
     Employee findEmployeeByUsername(String username);
 
+    boolean checkEmailWithUsername(String username, String email);
+
+    void changeAvatar(String username, MultipartFile avatar);
 }

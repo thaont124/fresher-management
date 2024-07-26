@@ -2,7 +2,7 @@ package com.gr.freshermanagement.service.impl;
 
 import com.gr.freshermanagement.dto.request.account.LoginRequest;
 import com.gr.freshermanagement.dto.request.account.SignupRequest;
-import com.gr.freshermanagement.dto.response.AuthenticationResponse;
+import com.gr.freshermanagement.dto.response.account.AuthenticationResponse;
 import com.gr.freshermanagement.entity.*;
 import com.gr.freshermanagement.exception.account.ExistUsernameException;
 import com.gr.freshermanagement.exception.account.UsernamePasswordIncorrectException;

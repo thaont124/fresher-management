@@ -5,6 +5,7 @@ import com.gr.freshermanagement.commons.Gender;
 import com.gr.freshermanagement.dto.request.employee.UpdateEmployeeRequest;
 import com.gr.freshermanagement.dto.response.EmployeeResponse;
 import com.gr.freshermanagement.entity.*;
+import com.gr.freshermanagement.exception.account.EmailNotValid;
 import com.gr.freshermanagement.exception.base.NotFoundException;
 import com.gr.freshermanagement.repository.AccountRepository;
 import com.gr.freshermanagement.repository.EmployeeRepository;
@@ -15,6 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -119,6 +121,21 @@ public class EmployeeServiceImpl implements EmployeeService {
         );
     }
 
+    @Override
+    public boolean checkEmailWithUsername(String username, String email){
+        boolean isValid = employeeRepository.checkMailWithUsername(username, email);
+
+        if(!isValid){
+            throw new EmailNotValid("Email is not match your information");
+        }
+        return true;
+    }
+
+    @Override
+    public void changeAvatar(String username, MultipartFile avatar) {
+
+    }
+
     private Employee createNewEmployee(UpdateEmployeeRequest request) {
         Employee newEmployee = Employee.builder()
                 .name(request.getName())
@@ -149,4 +166,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setGender(Gender.valueOf(updateRequest.getGender()));
         }
     }
+
+
 }
