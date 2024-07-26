@@ -1,7 +1,7 @@
 package com.gr.freshermanagement.service.impl;
 
 import com.gr.freshermanagement.dto.request.account.TokenRefreshRequest;
-import com.gr.freshermanagement.dto.response.AuthenticationResponse;
+import com.gr.freshermanagement.dto.response.account.AuthenticationResponse;
 import com.gr.freshermanagement.entity.Account;
 import com.gr.freshermanagement.entity.RefreshToken;
 import com.gr.freshermanagement.exception.account.TokenRefreshException;
