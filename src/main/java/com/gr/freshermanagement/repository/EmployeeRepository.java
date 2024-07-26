@@ -36,4 +36,10 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query("SELECT wh.center.id FROM WorkingHistory wh WHERE wh.employee.id = :fresherId " +
             "AND wh.endTime IS NULL")
     Long findCenterIdByFresherId(@Param("fresherId") Long fresherId);
+
+
+    @Query("SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END " +
+            "FROM Account a " +
+            "WHERE a.username = :username AND a.employee.email = :email")
+    boolean checkMailWithUsername(String username, String email);
 }
