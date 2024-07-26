@@ -4,24 +4,22 @@ import com.gr.freshermanagement.dto.ResponseGeneral;
 import com.gr.freshermanagement.dto.request.account.LoginRequest;
 import com.gr.freshermanagement.dto.request.account.SignupRequest;
 import com.gr.freshermanagement.dto.request.account.TokenRefreshRequest;
-import com.gr.freshermanagement.dto.response.AuthenticationResponse;
+import com.gr.freshermanagement.dto.response.account.AuthenticationResponse;
 import com.gr.freshermanagement.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -64,8 +62,35 @@ public class AuthController {
             )
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved list"),
-            @ApiResponse(responseCode = "400", description = "Username or Password is incorrect")
+            @ApiResponse(responseCode = "200", description = "Login success",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ResponseGeneral.class),
+                            examples = @ExampleObject(
+                                    value = "{\n" +
+                                            "  \"status\": 200,\n" +
+                                            "  \"message\": \"Login success\",\n" +
+                                            "  \"data\": {\n" +
+                                            "       \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcyMTk3ODc4MiwiZXhwIjoxNzIxOTc5MDgyfQ.T9ctMSng4c-FEKxCYc2Tf2PiGxDD5YrUSUvcXQKiwkw\",\n" +
+                                            "       \"refreshToken\": \"b7f48b54-2827-4219-8af5-47e7b56e9d64\"\n" +
+                                            "  },\n" +
+                                            "  \"timestamp\": \"2024-07-26\"\n" +
+                                            "}"
+                            )
+                    )),
+            @ApiResponse(responseCode = "400", description = "Username or Password is incorrect",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ResponseGeneral.class),
+                            examples = @ExampleObject(
+                                    value = "{\n" +
+                                            "  \"status\": 400,\n" +
+                                            "  \"message\": \"Username or Password is incorrect\",\n" +
+                                            "  \"data\": null,\n" +
+                                            "  \"timestamp\": \"2024-07-26\"\n" +
+                                            "}"
+                            )
+                    ))
     })
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request){
@@ -93,9 +118,9 @@ public class AuthController {
 
         try {
             if (validEmail){
-                emailService.sendOtpMessage(email, "Your OTP Code", "Your OTP code is: " + otp);
+                emailService.sendOtpHTMLMessage(email, "Your OTP Code", String.valueOf(otp));
             }
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(500).body(ResponseGeneral.of(500, "Error while sending OTP email.", null));
         }
 

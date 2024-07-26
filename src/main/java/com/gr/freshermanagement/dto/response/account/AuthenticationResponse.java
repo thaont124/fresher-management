@@ -1,4 +1,4 @@
-package com.gr.freshermanagement.dto.response;
+package com.gr.freshermanagement.dto.response.account;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
