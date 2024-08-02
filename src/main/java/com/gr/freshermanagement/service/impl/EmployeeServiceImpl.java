@@ -136,6 +136,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     }
 
+    @Override
+    public EmployeeResponse getEmployee(String username) {
+        Account account = accountRepository.findByUsername(username).orElseThrow(
+                () -> new NotFoundException("Account not found with username: " + username)
+        );
+        Employee employee = employeeRepository.findByAccount(account).orElseThrow(
+                () -> new NotFoundException("Employee not found with username: " + username + ". Please update your information first")
+        );
+        return MapperUtils.toDTO(employee, EmployeeResponse.class);
+    }
+
     private Employee createNewEmployee(UpdateEmployeeRequest request) {
         Employee newEmployee = Employee.builder()
                 .name(request.getName())

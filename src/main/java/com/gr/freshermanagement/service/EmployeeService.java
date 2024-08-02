@@ -28,4 +28,6 @@ public interface EmployeeService {
     boolean checkEmailWithUsername(String username, String email);
 
     void changeAvatar(String username, MultipartFile avatar);
+
+    EmployeeResponse getEmployee(String username);
 }

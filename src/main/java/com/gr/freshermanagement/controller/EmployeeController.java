@@ -22,6 +22,14 @@ public class EmployeeController {
     private final EmployeeService employeeService;
     private final AccountService accountService;
 
+    @PatchMapping("employee/info")
+    public ResponseEntity<?> viewInfo(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        EmployeeResponse employee = employeeService.getEmployee(username);
+        return ResponseEntity.ok(ResponseGeneral.of(200, "update success", employee));
+    }
 
     @PatchMapping("employee/update")
     public ResponseEntity<?> updateInfo(@RequestBody UpdateEmployeeRequest employeeDetails){
