@@ -1,4 +1,4 @@
-package com.gr.freshermanagement.dto.response;
+package com.gr.freshermanagement.dto.response.exercise;
 
 import com.gr.freshermanagement.entity.FresherExercise;
 import jakarta.persistence.OneToMany;

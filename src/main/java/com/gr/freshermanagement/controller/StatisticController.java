@@ -1,6 +1,7 @@
 package com.gr.freshermanagement.controller;
 
 import com.gr.freshermanagement.dto.ResponseGeneral;
+import com.gr.freshermanagement.dto.response.statistic.CenterFresherCountResponse;
 import com.gr.freshermanagement.dto.response.statistic.FresherScoreStatisticResponse;
 import com.gr.freshermanagement.projection.CenterFresherCountProjection;
 import com.gr.freshermanagement.service.ExerciseService;
@@ -43,7 +44,7 @@ public class StatisticController {
         if (date == null) {
             date = LocalDate.now();
         }
-        List<CenterFresherCountProjection> fresherScores = exerciseService.getFresherScoresByCenterAndDate(date);
+        List<CenterFresherCountResponse> fresherScores = exerciseService.getFresherScoresByCenterAndDate(date);
         return ResponseEntity.ok(ResponseGeneral.of(HttpStatus.OK.value(), "Get statistic success", fresherScores));
 
     }

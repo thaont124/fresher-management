@@ -15,6 +15,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +37,10 @@ public class AccountServiceImpl implements AccountService {
     @Value("${jwt.refreshExp}")
     private Long refreshTokenDurationMs;
 
+    @Value("${jwt.expiration.ms}")
+    private Long accessTokenDurationMs;
+
+    private final CacheManager cacheManager;
     private final AuthenticationManager authenticationManager;
     private final EmployeeRepository employeeRepository;
     private final AccountRepository accountRepository;
@@ -83,12 +90,14 @@ public class AccountServiceImpl implements AccountService {
         String token = jwtUtility.generateToken(userDetails);
 
         return AuthenticationResponse.builder()
-                .token(token).build();
+                .accessToken(token).build();
     }
 
     @Override
     public AuthenticationResponse login(LoginRequest loginRequest) {
         try {
+            Cache cache = cacheManager.getCache("accessTokens");
+
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -108,8 +117,11 @@ public class AccountServiceImpl implements AccountService {
             refreshToken.setRefreshToken(UUID.randomUUID().toString());
             refreshToken = refreshTokenRepository.save(refreshToken);
 
+            if (cache != null) {
+                cache.put(accessToken, refreshToken);
+            }
             return AuthenticationResponse.builder()
-                    .token(accessToken)
+                    .accessToken(accessToken)
                     .refreshToken(refreshToken.getRefreshToken())
                     .build();
         } catch (Exception e) {
@@ -124,6 +136,35 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
 
         List<RefreshToken> refreshTokens = refreshTokenRepository.findByAccount(account);
+        // delete accessToken in cache
+        Cache cache = cacheManager.getCache("accessTokens");
+        if (cache != null) {
+            for (RefreshToken refreshToken : refreshTokens) {
+                cache.evictIfPresent(refreshToken);
+            }
+        }
         refreshTokenRepository.deleteAll(refreshTokens);
     }
+
+    @Override
+    public void clearAccessToken(String key) {
+        Cache cache = cacheManager.getCache("accessTokens");
+        if (cache != null) {
+            cache.evict(key);
+        }
+    }
+
+    @Override
+    public void scheduleCacheEviction(String key) {
+        new Thread(() -> {
+            try {
+                TimeUnit.MINUTES.sleep(accessTokenDurationMs);
+                clearAccessToken(key);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }).start();
+    }
+
+
 }

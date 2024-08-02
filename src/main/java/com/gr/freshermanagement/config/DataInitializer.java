@@ -32,6 +32,7 @@ public class DataInitializer implements CommandLineRunner {
         Role adminRole = createRoleIfNotExists("ROLE_ADMIN");
         Role fresherRole = createRoleIfNotExists("ROLE_FRESHER");
         Role directorRole = createRoleIfNotExists("ROLE_DIRECTOR");
+        Role mentorRole = createRoleIfNotExists("ROLE_MENTOR");
 
         // Create admin account if not exist
         if (accountRepository.findByUsername("admin").isEmpty()) {

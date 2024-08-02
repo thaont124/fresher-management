@@ -1,4 +1,4 @@
-package com.gr.freshermanagement.dto.response;
+package com.gr.freshermanagement.dto.response.center;
 
 import com.gr.freshermanagement.entity.Center;
 import lombok.AllArgsConstructor;

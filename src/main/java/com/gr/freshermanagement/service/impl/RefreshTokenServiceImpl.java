@@ -1,5 +1,6 @@
 package com.gr.freshermanagement.service.impl;
 
+import com.gr.freshermanagement.dto.request.account.SignoutRequest;
 import com.gr.freshermanagement.dto.request.account.TokenRefreshRequest;
 import com.gr.freshermanagement.dto.response.account.AuthenticationResponse;
 import com.gr.freshermanagement.entity.Account;
@@ -13,6 +14,8 @@ import com.gr.freshermanagement.security.JWTUtility;
 import com.gr.freshermanagement.service.RefreshTokenService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final AccountRepository accountRepository;
     private final JWTUtility jwtUtility;
     private final CustomUserDetailsService userDetailsService;
+    private final CacheManager cacheManager;
+
 
     @Override
     public RefreshToken verifyExpiration(RefreshToken token) {
@@ -38,14 +43,22 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Transactional
     @Override
-    public void deleteByUserId(String username) {
-        Account account = accountRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("Not found with username: " + username));
+    public void logout(SignoutRequest signoutRequest) {
+        Cache cache = cacheManager.getCache("accessTokens");
 
-        refreshTokenRepository.deleteByAccount(account);
+        if (!refreshTokenRepository.existsByRefreshToken(signoutRequest.getRefreshToken())) {
+            throw new TokenRefreshException(signoutRequest.getRefreshToken(), "Refresh token was not exists");
+        }
+        if (cache != null) {
+            cache.evictIfPresent(signoutRequest.getRefreshToken());
+        }
+        // delete refresh-token in db
+        refreshTokenRepository.deleteByRefreshToken(signoutRequest.getRefreshToken());
     }
 
     @Override
     public AuthenticationResponse refreshToken(TokenRefreshRequest request) {
+        Cache cache = cacheManager.getCache("accessTokens");
 
         String requestRefreshToken = request.getRefreshToken();
 
@@ -56,6 +69,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         UserDetails userDetails = userDetailsService.loadUserByUsername(refreshToken.getAccount().getUsername());
         String token = jwtUtility.generateToken(userDetails);
 
+        if (cache != null) {
+            cache.put(token, requestRefreshToken);
+        }
         return new AuthenticationResponse(token, requestRefreshToken);
     }
 

@@ -4,7 +4,7 @@ import com.gr.freshermanagement.dto.ResponseGeneral;
 import com.gr.freshermanagement.dto.request.excercise.ExerciseRequest;
 import com.gr.freshermanagement.dto.request.excercise.GradeRequest;
 import com.gr.freshermanagement.dto.request.excercise.RegisterExerciseRequest;
-import com.gr.freshermanagement.dto.response.FresherExerciseResponse;
+import com.gr.freshermanagement.dto.response.exercise.FresherExerciseResponse;
 import com.gr.freshermanagement.entity.Employee;
 import com.gr.freshermanagement.exception.base.NotFoundException;
 import com.gr.freshermanagement.service.EmployeeService;

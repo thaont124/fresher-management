@@ -1,7 +1,6 @@
-package com.gr.freshermanagement.dto.response;
+package com.gr.freshermanagement.dto.response.exercise;
 
-import com.gr.freshermanagement.dto.response.EmployeeResponse;
-import com.gr.freshermanagement.dto.response.ExerciseResponse;
+import com.gr.freshermanagement.dto.response.employee.EmployeeResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

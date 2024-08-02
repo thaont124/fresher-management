@@ -3,7 +3,10 @@ package com.gr.freshermanagement.service.impl;
 import com.gr.freshermanagement.dto.request.excercise.ExerciseRequest;
 import com.gr.freshermanagement.dto.request.excercise.GradeRequest;
 import com.gr.freshermanagement.dto.request.excercise.RegisterExerciseRequest;
-import com.gr.freshermanagement.dto.response.FresherExerciseResponse;
+import com.gr.freshermanagement.dto.response.exercise.ScoreResponse;
+import com.gr.freshermanagement.dto.response.statistic.CenterFresherCountResponse;
+import com.gr.freshermanagement.dto.response.employee.EmployeeResponse;
+import com.gr.freshermanagement.dto.response.exercise.FresherExerciseResponse;
 import com.gr.freshermanagement.dto.response.statistic.ExerciseResultResponse;
 import com.gr.freshermanagement.dto.response.statistic.FresherScoreStatisticResponse;
 import com.gr.freshermanagement.entity.Employee;
@@ -29,7 +32,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ExerciseServiceImpl implements ExerciseService {
+public  class ExerciseServiceImpl implements ExerciseService {
     private final FresherExerciseRepository fresherExerciseRepository;
     private final ExerciseRepository exerciseRepository;
     private final EmployeeRepository employeeRepository;
@@ -93,8 +96,21 @@ public class ExerciseServiceImpl implements ExerciseService {
 
 
     @Override
-    public List<CenterFresherCountProjection> getFresherScoresByCenterAndDate(LocalDate date) {
-        return fresherExerciseRepository.findFresherScoresByCenterAndDate(date);
+    public List<CenterFresherCountResponse> getFresherScoresByCenterAndDate(LocalDate date) {
+        List<CenterFresherCountProjection> projections = fresherExerciseRepository.findFresherScoresByCenterAndDate(date);
+
+        // Chuyển đổi từ projection sang response
+        return projections.stream().map(projection -> {
+            List<ScoreResponse> fresherResponses = projection.getFreshers().stream().map(fresher
+                    -> new ScoreResponse(fresher.getId(), fresher.getName(), fresher.getScore())
+            ).collect(Collectors.toList());
+
+            return new CenterFresherCountResponse(
+                    projection.getCenterId(),
+                    projection.getCenterName(),
+                    fresherResponses
+            );
+        }).collect(Collectors.toList());
     }
 
     @Override

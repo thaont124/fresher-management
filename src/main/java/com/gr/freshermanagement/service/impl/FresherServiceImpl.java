@@ -5,7 +5,7 @@ import com.gr.freshermanagement.commons.Gender;
 import com.gr.freshermanagement.dto.request.employee.AssignFresherRequest;
 import com.gr.freshermanagement.dto.request.employee.ListAssignFresherRequest;
 import com.gr.freshermanagement.dto.request.employee.NewEmployeeRequest;
-import com.gr.freshermanagement.dto.response.EmployeeResponse;
+import com.gr.freshermanagement.dto.response.employee.EmployeeResponse;
 import com.gr.freshermanagement.entity.*;
 import com.gr.freshermanagement.exception.base.NotFoundException;
 import com.gr.freshermanagement.exception.employee.EmployeeInAnotherCenter;

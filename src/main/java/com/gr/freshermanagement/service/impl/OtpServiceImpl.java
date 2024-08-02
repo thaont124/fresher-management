@@ -1,7 +1,7 @@
 package com.gr.freshermanagement.service.impl;
 
 import com.gr.freshermanagement.service.OtpService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -10,11 +10,11 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@AllArgsConstructor
 public class OtpServiceImpl implements OtpService {
     private static final Integer EXPIRE_MINS = 2;
 
-    @Autowired
-    private CacheManager cacheManager;
+    private final CacheManager cacheManager;
 
     @Override
     public int generateOTP(String key) {

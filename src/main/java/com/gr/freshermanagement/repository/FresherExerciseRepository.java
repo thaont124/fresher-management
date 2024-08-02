@@ -46,7 +46,9 @@ public interface FresherExerciseRepository extends JpaRepository<FresherExercise
             "JOIN WorkingHistory w ON e.fresher.id = w.employee.id " +
             "WHERE DATE(e.submitDate) = :date AND w.startTime <= :date AND (w.endTime IS NULL OR w.endTime >= :date) " +
             "GROUP BY w.center.id, w.center.name, e.fresher.id, e.fresher.name " +
-            "HAVING COUNT(e.id) >= 3")
+            "HAVING (COUNT(e.id) >= 3) " +
+            "OR COUNT(e.id) < 3 " +
+            "ORDER BY averageScore DESC")
     List<CenterFresherCountProjection> findFresherScoresByCenterAndDate(@Param("date") LocalDate date);
 
 

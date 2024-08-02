@@ -1,7 +1,7 @@
 package com.gr.freshermanagement.service;
 
 import com.gr.freshermanagement.dto.request.employee.UpdateEmployeeRequest;
-import com.gr.freshermanagement.dto.response.EmployeeResponse;
+import com.gr.freshermanagement.dto.response.employee.EmployeeResponse;
 import com.gr.freshermanagement.entity.Account;
 import com.gr.freshermanagement.entity.Employee;
 import com.gr.freshermanagement.repository.AccountRepository;

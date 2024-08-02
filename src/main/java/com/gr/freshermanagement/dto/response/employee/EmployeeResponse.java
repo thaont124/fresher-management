@@ -1,4 +1,4 @@
-package com.gr.freshermanagement.dto.response;
+package com.gr.freshermanagement.dto.response.employee;
 
 import com.gr.freshermanagement.entity.*;
 import jakarta.persistence.*;

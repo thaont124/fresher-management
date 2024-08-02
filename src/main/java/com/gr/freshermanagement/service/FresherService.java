@@ -1,8 +1,7 @@
 package com.gr.freshermanagement.service;
 
 import com.gr.freshermanagement.dto.request.employee.ListAssignFresherRequest;
-import com.gr.freshermanagement.dto.response.EmployeeResponse;
-import org.springframework.data.domain.Page;
+import com.gr.freshermanagement.dto.response.employee.EmployeeResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;

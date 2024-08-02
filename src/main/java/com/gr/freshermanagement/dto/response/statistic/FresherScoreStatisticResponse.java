@@ -1,6 +1,5 @@
 package com.gr.freshermanagement.dto.response.statistic;
 
-import com.gr.freshermanagement.dto.response.FresherExerciseResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

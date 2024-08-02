@@ -3,7 +3,7 @@ package com.gr.freshermanagement.service.impl;
 import com.gr.freshermanagement.dto.request.center.CenterUpdateRequest;
 import com.gr.freshermanagement.dto.request.center.MergeCentersRequest;
 import com.gr.freshermanagement.dto.request.center.NewCenterRequest;
-import com.gr.freshermanagement.dto.response.CenterResponse;
+import com.gr.freshermanagement.dto.response.center.CenterResponse;
 import com.gr.freshermanagement.entity.Center;
 import com.gr.freshermanagement.entity.CenterHistory;
 import com.gr.freshermanagement.entity.WorkingHistory;

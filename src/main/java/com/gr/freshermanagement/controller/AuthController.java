@@ -2,6 +2,7 @@ package com.gr.freshermanagement.controller;
 
 import com.gr.freshermanagement.dto.ResponseGeneral;
 import com.gr.freshermanagement.dto.request.account.LoginRequest;
+import com.gr.freshermanagement.dto.request.account.SignoutRequest;
 import com.gr.freshermanagement.dto.request.account.SignupRequest;
 import com.gr.freshermanagement.dto.request.account.TokenRefreshRequest;
 import com.gr.freshermanagement.dto.response.account.AuthenticationResponse;
@@ -104,10 +105,12 @@ public class AuthController {
     }
 
     @PostMapping("/signout")
-    public ResponseEntity<?> logoutUser() {
+    public ResponseEntity<?> logoutUser(@RequestBody SignoutRequest signoutRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        refreshTokenService.deleteByUserId(username);
+
+        accountService.clearAccessToken(username);
+        refreshTokenService.logout(signoutRequest);
         return ResponseEntity.ok(ResponseGeneral.of(200, "Logout success", null));
     }
 

@@ -11,4 +11,7 @@ public interface AccountService {
     void changePassword(String username, String email, String newPassword);
 
 
+    void clearAccessToken(String key);
+
+    void scheduleCacheEviction(String key);
 }
